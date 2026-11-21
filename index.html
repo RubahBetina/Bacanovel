@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KertasBiru &mdash; Platform Baca Novel</title>
+  <title>KertasBiru — Platform Baca Novel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
       --pastel-bg: #f3f8fe;
@@ -31,81 +31,63 @@
       --pastel-accent-hover: #2563eb;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--pastel-bg);
       color: var(--pastel-text);
-      font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
       overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .reader-prose {
-      font-family: "Lora", Georgia, serif;
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
-
-    @keyframes slideFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .hero-slide-enter {
-      animation: slideFadeIn 0.45s ease-out;
-    }
-
-    .slideshow-transparent-body {
-      background: rgba(255, 255, 255, 0.56);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-
-    html.dark .slideshow-transparent-body {
-      background: rgba(18, 30, 54, 0.62);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-
-    .chapter-scroll-box {
-      max-height: 280px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-    }
-
-    .ad-slot-card {
-      background-color: var(--pastel-card);
-      border: 1px dashed var(--pastel-border);
-      border-radius: 1rem;
-      padding: 1rem;
-      text-align: center;
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
   <!-- Header Atas -->
   <header class="bg-[var(--pastel-card)] border-b border-[var(--pastel-border)] sticky top-0 z-30">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-      <a
-        href="#home"
-        onclick="goHomePage(event)"
-        class="flex items-center gap-2.5 font-extrabold text-lg tracking-tight text-[var(--pastel-text)]"
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-2.5">
+      <button
+        type="button"
+        onclick="goHome()"
+        class="flex items-center gap-2 text-left cursor-pointer shrink-0"
       >
-        <span class="w-8 h-8 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-[var(--pastel-accent)] flex items-center justify-center text-sm font-extrabold">
+        <span class="w-9 h-9 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] flex items-center justify-center font-extrabold text-[var(--pastel-accent)] text-base">
           K
         </span>
-        <span>Kertas<span class="text-[var(--pastel-accent)]">Biru</span></span>
-      </a>
+        <span class="font-extrabold text-base sm:text-lg tracking-tight">
+          Kertas<span class="text-[var(--pastel-accent)]">Biru</span>
+        </span>
+      </button>
 
-      <div class="flex items-center gap-2">
+      <!-- Kolom Search di ruang header atas sesuai permintaan -->
+      <input
+        id="headerSearchInput"
+        type="search"
+        oninput="handleHeaderSearch(this.value)"
+        placeholder="Cari..."
+        aria-label="Cari novel"
+        class="w-24 sm:w-44 md:w-56 min-w-0 px-2.5 py-1.5 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] text-xs font-medium text-[var(--pastel-text)]"
+      />
+
+      <div class="flex items-center gap-1.5 shrink-0">
         <button
           type="button"
-          onclick="toggleSlideDrawer()"
-          aria-label="Buka atau Tutup Menu Samping"
-          class="px-3 py-1.5 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs font-bold text-[var(--pastel-text)] cursor-pointer"
+          onclick="toggleMobileMenu()"
+          aria-label="Menu Samping"
+          class="w-9 h-9 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] flex items-center justify-center text-sm font-bold cursor-pointer"
         >
           &#9776;
         </button>
@@ -113,45 +95,45 @@
           type="button"
           onclick="toggleTheme()"
           aria-label="Ganti Tema"
-          class="px-3 py-1.5 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs font-bold text-[var(--pastel-text)] cursor-pointer"
+          class="w-9 h-9 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] flex items-center justify-center text-sm font-bold cursor-pointer"
         >
-          <span id="themeLabel">&#9790;</span>
+          <span id="themeIcon">&#9790;</span>
         </button>
       </div>
     </div>
 
-    <!-- Navigasi Utama -->
+    <!-- Bar Navigasi Utama -->
     <nav class="border-t border-[var(--pastel-border)] bg-[var(--pastel-card)]">
-      <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-2 overflow-x-auto text-sm font-semibold">
+      <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar text-xs sm:text-sm font-bold">
         <button
-          type="button"
           id="nav-home"
-          onclick="goHomePage(event)"
-          class="px-3.5 py-1.5 rounded-xl bg-[var(--pastel-accent)] text-white whitespace-nowrap cursor-pointer"
+          type="button"
+          onclick="goHome()"
+          class="px-3.5 py-1.5 rounded-xl bg-[var(--pastel-accent)] text-white shrink-0 cursor-pointer"
         >
           Home
         </button>
         <button
-          type="button"
           id="nav-catalog"
-          onclick="openCatalogAZPage(event)"
-          class="px-3.5 py-1.5 rounded-xl text-[var(--pastel-text)] hover:bg-[var(--pastel-soft)] whitespace-nowrap cursor-pointer"
+          type="button"
+          onclick="openCatalogView()"
+          class="px-3.5 py-1.5 rounded-xl hover:bg-[var(--pastel-soft)] text-[var(--pastel-muted)] shrink-0 cursor-pointer"
         >
           Daftar Novel
         </button>
         <button
-          type="button"
           id="nav-genre"
-          onclick="openGenrePage(event)"
-          class="px-3.5 py-1.5 rounded-xl text-[var(--pastel-text)] hover:bg-[var(--pastel-soft)] whitespace-nowrap cursor-pointer"
+          type="button"
+          onclick="openGenreView('')"
+          class="px-3.5 py-1.5 rounded-xl hover:bg-[var(--pastel-soft)] text-[var(--pastel-muted)] shrink-0 cursor-pointer"
         >
           Genre
         </button>
         <button
-          type="button"
           id="nav-bookmark"
-          onclick="openBookmarksPage(event)"
-          class="px-3.5 py-1.5 rounded-xl text-[var(--pastel-text)] hover:bg-[var(--pastel-soft)] whitespace-nowrap cursor-pointer"
+          type="button"
+          onclick="openBookmarkView()"
+          class="px-3.5 py-1.5 rounded-xl hover:bg-[var(--pastel-soft)] text-[var(--pastel-muted)] shrink-0 cursor-pointer"
         >
           Bookmark
         </button>
@@ -159,102 +141,162 @@
     </nav>
   </header>
 
-  <!-- Backdrop & Drawer Samping -->
+  <!-- Backdrop & Panel Geser Samping Setengah Layar (Hanya Genre & Bookmark) -->
   <div
-    id="sideHalfBackdrop"
-    onclick="toggleSlideDrawer(false)"
+    id="sideMenuBackdrop"
+    onclick="toggleMobileMenu(false)"
     class="hidden fixed inset-0 bg-slate-950/50 z-40"
   ></div>
   <aside
-    id="sideHalfDrawer"
+    id="sideMenuDrawer"
     aria-label="Menu Samping"
-    class="fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-[var(--pastel-card)] border-l border-[var(--pastel-border)] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-out p-5 flex flex-col justify-between"
+    class="fixed top-0 right-0 h-full w-1/2 min-w-[260px] max-w-[460px] bg-[var(--pastel-card)] border-l border-[var(--pastel-border)] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-out flex flex-col overflow-y-auto p-4"
   >
-    <div class="space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-[var(--pastel-border)]">
-        <span class="font-extrabold text-base">Menu KertasBiru</span>
-        <button
-          type="button"
-          onclick="toggleSlideDrawer(false)"
-          class="w-8 h-8 rounded-full bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-sm font-bold cursor-pointer"
-        >
-          &times;
-        </button>
-      </div>
-      <div class="flex flex-col gap-2 text-sm font-semibold">
-        <button type="button" onclick="goHomePage(); toggleSlideDrawer(false);" class="text-left px-3.5 py-2 rounded-xl hover:bg-[var(--pastel-soft)] cursor-pointer">Home</button>
-        <button type="button" onclick="openCatalogAZPage(); toggleSlideDrawer(false);" class="text-left px-3.5 py-2 rounded-xl hover:bg-[var(--pastel-soft)] cursor-pointer">Daftar Novel (A&ndash;Z)</button>
-        <button type="button" onclick="openGenrePage(); toggleSlideDrawer(false);" class="text-left px-3.5 py-2 rounded-xl hover:bg-[var(--pastel-soft)] cursor-pointer">Genre</button>
-        <button type="button" onclick="openBookmarksPage(); toggleSlideDrawer(false);" class="text-left px-3.5 py-2 rounded-xl hover:bg-[var(--pastel-soft)] cursor-pointer">Bookmark</button>
-      </div>
+    <div class="flex items-center justify-between pb-3 mb-3 border-b border-[var(--pastel-border)]">
+      <span class="text-xs font-extrabold uppercase tracking-wider text-[var(--pastel-muted)]">MENU</span>
+      <button
+        type="button"
+        onclick="toggleMobileMenu(false)"
+        aria-label="Tutup Menu"
+        class="w-8 h-8 rounded-lg bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-sm font-bold flex items-center justify-center cursor-pointer"
+      >
+        &times;
+      </button>
     </div>
-    <div class="text-xs text-[var(--pastel-muted)] pt-3 border-t border-[var(--pastel-border)]">
-      KertasBiru &bull; Baca Novel Nyaman
+
+    <div class="grid grid-cols-1 gap-2 mb-4">
+      <button
+        id="sideBtn-genre"
+        type="button"
+        onclick="selectSidePanelTab('genre')"
+        class="w-full text-left px-3.5 py-2.5 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer"
+      >
+        Genre
+      </button>
+      <button
+        id="sideBtn-bookmark"
+        type="button"
+        onclick="selectSidePanelTab('bookmark')"
+        class="w-full text-left px-3.5 py-2.5 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs sm:text-sm font-bold cursor-pointer"
+      >
+        Bookmark
+      </button>
     </div>
+
+    <div id="sidePanelContent" class="flex-1 space-y-2.5"></div>
   </aside>
 
   <!-- Konten Utama -->
-  <main id="appViewport" class="flex-1 max-w-6xl w-full mx-auto px-4 py-6"></main>
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-5">
+    <div id="appViewport"></div>
+
+    <!-- Slot Iklan di Antara Postingan dan Footer -->
+    <div class="mt-8 mb-2 bg-[var(--pastel-card)] border border-dashed border-[var(--pastel-border)] rounded-2xl p-4 text-center">
+      <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">IKLAN</div>
+      <div class="text-xs sm:text-sm text-[var(--pastel-muted)]">
+        Wadah Slot Iklan <code class="px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] text-[var(--pastel-text)] text-xs">above_footer</code>
+      </div>
+    </div>
+  </main>
 
   <!-- Footer -->
-  <footer class="bg-[var(--pastel-card)] border-t border-[var(--pastel-border)] py-5 px-4 mt-10 text-center text-xs text-[var(--pastel-muted)]">
-    <p class="mb-2">&copy; KertasBiru &mdash; Platform Baca Novel.</p>
-    <div class="flex items-center justify-center gap-4 font-semibold">
-      <button type="button" onclick="goHomePage(event)" class="hover:text-[var(--pastel-accent)] cursor-pointer">Home</button>
-      <button type="button" onclick="openCatalogAZPage(event)" class="hover:text-[var(--pastel-accent)] cursor-pointer">Daftar Novel</button>
-      <button type="button" onclick="openBookmarksPage(event)" class="hover:text-[var(--pastel-accent)] cursor-pointer">Bookmark</button>
+  <footer class="bg-[var(--pastel-card)] border-t border-[var(--pastel-border)] py-5 px-4 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
+    <div class="max-w-6xl mx-auto">
+      <p class="mb-2">&copy; KertasBiru &mdash; Platform Baca Novel.</p>
+      <div class="flex items-center justify-center gap-4 font-semibold">
+        <button type="button" onclick="goHome()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Home</button>
+        <button type="button" onclick="openCatalogView()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Daftar Novel</button>
+        <button type="button" onclick="openGenreView('')" class="hover:text-[var(--pastel-accent)] cursor-pointer">Genre</button>
+        <button type="button" onclick="openBookmarkView()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Bookmark</button>
+      </div>
     </div>
   </footer>
 
+  <!-- Modal Pop-Up Iklan (Maksimal Sekali Tiap 20 Menit) -->
+  <div
+    id="promoAdModal"
+    class="hidden fixed inset-0 bg-slate-950/75 z-50 items-center justify-center p-4"
+  >
+    <div class="relative w-full max-w-md bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 shadow-2xl">
+      <button
+        type="button"
+        onclick="closePromoAdModal()"
+        aria-label="Tutup Iklan"
+        class="w-8 h-8 rounded-full bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-sm font-bold flex items-center justify-center float-right cursor-pointer"
+      >
+        &times;
+      </button>
+      <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-accent)] mb-1">
+        Sponsor &amp; Rekomendasi
+      </div>
+      <h3 class="text-base font-extrabold mb-2">Dukung Terus KertasBiru</h3>
+      <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-4">
+        Nikmati cerita berseri favoritmu setiap hari. Slot iklan pop-up ini otomatis dijeda selama 20 menit setelah muncul.
+      </p>
+      <div class="flex justify-end gap-2">
+        <button
+          type="button"
+          onclick="closePromoAdModal()"
+          class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer"
+        >
+          Lanjut Baca
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const NOVEL_CONFIG = {
-      siteName: "KertasBiru",
-      bloggerUrl: "https://novelkutest.blogspot.com",
-      defaultGenres: [
-        "Romance",
-        "Fantasi",
-        "Action",
-        "Drama",
-        "Misteri",
-        "Horor",
-        "Komedi",
-        "Sci-Fi",
-        "Slice of Life",
-        "Petualangan",
-        "Sejarah",
-        "Thriller"
-      ]
-    };
-
+    const BLOGGER_FEED_URL = "https://novelkutest.blogspot.com";
     const STORAGE_KEYS = {
-      theme: "kertasbiru_dark_v1",
+      theme: "kertasbiru_theme_v1",
       bookmarks: "kertasbiru_bookmarks_v1",
-      reads: "kertasbiru_reads_v1"
+      comments: "kertasbiru_comments_v1",
+      lastPopupAt: "kertasbiru_last_popup_20m_v1"
     };
+    const POPUP_INTERVAL_MS = 20 * 60 * 1000;
+    const DEFAULT_GENRES = [
+      "Romance",
+      "Fantasi",
+      "Action",
+      "Drama",
+      "Misteri",
+      "Horor",
+      "Komedi",
+      "Sci-Fi",
+      "Slice of Life",
+      "Petualangan",
+      "Sejarah",
+      "Thriller"
+    ];
+    const ALPHABET_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-    const APP_STATE = {
-      view: "home",
-      selectedNovelSlug: null,
-      selectedChapterSlug: null,
-      selectedGenre: "",
-      selectedAZLetter: "ALL",
-      homeSectionMode: "all",
-      heroSlideIndex: 0,
-      feedLoaded: false,
-      seriesList: [],
-      chapterList: [],
-      audioTracks: [],
-      genres: [...NOVEL_CONFIG.defaultGenres]
-    };
+    let allNovels = [];
+    let allChapters = [];
+    let bookmarks = [];
+    let commentsMap = {};
+    let currentView = "home";
+    let activeNovelId = null;
+    let activeChapterId = null;
+    let activeGenre = "";
+    let searchQuery = "";
+    let selectedLetter = "";
+    let heroIndex = 0;
+    let heroTimer = null;
+    let sideMenuOpen = false;
+    let activeSideTab = "genre";
+    let selectedSideGenre = "";
 
-    let bookmarkedSlugs = [];
-    let readCounts = {};
-    let heroIntervalId = null;
-    let bgAudioPlayer = null;
-    let currentAudioIndex = 0;
+    function safeJsonParse(raw, fallback) {
+      try {
+        const parsed = JSON.parse(raw);
+        return parsed !== null && parsed !== undefined ? parsed : fallback;
+      } catch (_err) {
+        return fallback;
+      }
+    }
 
-    function escapeHtml(value) {
-      return String(value ?? "")
+    function escapeHtml(str) {
+      return String(str || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -262,1130 +304,1167 @@
         .replace(/'/g, "&#39;");
     }
 
-    function slugify(text) {
-      return String(text || "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-    }
-
-    function stripHtml(html) {
-      const div = document.createElement("div");
-      div.innerHTML = String(html || "");
-      return (div.textContent || div.innerText || "").trim();
-    }
-
-    function loadStorage() {
+    function loadSavedState() {
       try {
-        const isDark = localStorage.getItem(STORAGE_KEYS.theme) === "1";
-        document.documentElement.classList.toggle("dark", isDark);
-        updateThemeLabel();
-      } catch (e) {}
+        const savedTheme = localStorage.getItem(STORAGE_KEYS.theme);
+        if (savedTheme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+        updateThemeIcon();
 
-      try {
-        const rawBm = JSON.parse(localStorage.getItem(STORAGE_KEYS.bookmarks) || "[]");
-        bookmarkedSlugs = Array.isArray(rawBm) ? rawBm : [];
-      } catch (e) {
-        bookmarkedSlugs = [];
-      }
+        bookmarks = safeJsonParse(localStorage.getItem(STORAGE_KEYS.bookmarks), []);
+        if (!Array.isArray(bookmarks)) bookmarks = [];
 
-      try {
-        const rawReads = JSON.parse(localStorage.getItem(STORAGE_KEYS.reads) || "{}");
-        readCounts = rawReads && typeof rawReads === "object" ? rawReads : {};
-      } catch (e) {
-        readCounts = {};
+        commentsMap = safeJsonParse(localStorage.getItem(STORAGE_KEYS.comments), {});
+        if (!commentsMap || typeof commentsMap !== "object") commentsMap = {};
+      } catch (_err) {
+        bookmarks = [];
+        commentsMap = {};
       }
     }
 
-    function updateThemeLabel() {
-      const label = document.getElementById("themeLabel");
-      if (!label) return;
-      const isDark = document.documentElement.classList.contains("dark");
-      label.innerHTML = isDark ? "&#9728;" : "&#9790;";
+    function updateThemeIcon() {
+      const icon = document.getElementById("themeIcon");
+      if (icon) {
+        icon.innerHTML = document.documentElement.classList.contains("dark") ? "&#9728;" : "&#9790;";
+      }
     }
 
     function toggleTheme() {
-      const nextDark = !document.documentElement.classList.contains("dark");
-      document.documentElement.classList.toggle("dark", nextDark);
+      const isDark = document.documentElement.classList.toggle("dark");
       try {
-        localStorage.setItem(STORAGE_KEYS.theme, nextDark ? "1" : "0");
-      } catch (e) {}
-      updateThemeLabel();
-      renderCurrentView();
+        localStorage.setItem(STORAGE_KEYS.theme, isDark ? "dark" : "light");
+      } catch (_err) {}
+      updateThemeIcon();
     }
 
-    function toggleSlideDrawer(forceState) {
-      const drawer = document.getElementById("sideHalfDrawer");
-      const backdrop = document.getElementById("sideHalfBackdrop");
+    function toggleMobileMenu(forceState) {
+      const drawer = document.getElementById("sideMenuDrawer");
+      const backdrop = document.getElementById("sideMenuBackdrop");
       if (!drawer || !backdrop) return;
-      const isOpen = !drawer.classList.contains("translate-x-full");
-      const targetOpen = typeof forceState === "boolean" ? forceState : !isOpen;
-      drawer.classList.toggle("translate-x-full", !targetOpen);
-      backdrop.classList.toggle("hidden", !targetOpen);
-    }
 
-    function toggleBookmark(slug) {
-      if (!slug) return;
-      const idx = bookmarkedSlugs.indexOf(slug);
-      if (idx >= 0) {
-        bookmarkedSlugs.splice(idx, 1);
+      sideMenuOpen = typeof forceState === "boolean" ? forceState : !sideMenuOpen;
+      if (sideMenuOpen) {
+        backdrop.classList.remove("hidden");
+        drawer.classList.remove("translate-x-full");
+        renderSidePanelContent();
       } else {
-        bookmarkedSlugs.push(slug);
+        drawer.classList.add("translate-x-full");
+        backdrop.classList.add("hidden");
       }
-      try {
-        localStorage.setItem(STORAGE_KEYS.bookmarks, JSON.stringify(bookmarkedSlugs));
-      } catch (e) {}
-      renderCurrentView();
     }
 
-    function recordReadCount(slug) {
-      if (!slug) return;
-      readCounts[slug] = (Number(readCounts[slug]) || 0) + 1;
-      try {
-        localStorage.setItem(STORAGE_KEYS.reads, JSON.stringify(readCounts));
-      } catch (e) {}
-    }
+    function selectSidePanelTab(tab) {
+      activeSideTab = tab === "bookmark" ? "bookmark" : "genre";
+      const btnGenre = document.getElementById("sideBtn-genre");
+      const btnBookmark = document.getElementById("sideBtn-bookmark");
 
-    function extractAuthorLine(rawHtml) {
-      const plain = stripHtml(rawHtml);
-      const lines = plain
-        .split(/\r?\n/)
-        .map((l) => l.trim())
-        .filter(Boolean);
-      const found = lines.find((line) => /^penulis\s*:/i.test(line));
-      return found ? found : "";
-    }
-
-    function extractCoverImage(rawHtml, fallbackText) {
-      const imgMatch = String(rawHtml || "").match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (imgMatch && imgMatch[1]) return imgMatch[1];
-      return `https://placehold.co/600x800/dcebfa/162b4d?text=${encodeURIComponent(fallbackText || "Poster")}`;
-    }
-
-    function extractSynopsis(rawHtml) {
-      const plain = stripHtml(rawHtml);
-      const cleanLines = plain
-        .split(/\r?\n/)
-        .map((l) => l.trim())
-        .filter((l) => l && !/^penulis\s*:/i.test(l));
-      const joined = cleanLines.join(" ").trim();
-      if (!joined) return "Sinopsis belum tersedia.";
-      return joined.length > 130 ? `${joined.slice(0, 127).trim()}...` : joined;
-    }
-
-    function extractAudioUrls(rawHtml) {
-      const urls = [];
-      const matches = String(rawHtml || "").match(/https?:\/\/[^\s"'<>]+\.(?:mp3|ogg|wav|m4a)(?:\?[^\s"'<>]*)?/gi) || [];
-      matches.forEach((u) => {
-        if (!urls.includes(u)) urls.push(u);
-      });
-      return urls;
-    }
-
-    function parseBloggerEntries(entries) {
-      const seriesMap = new Map();
-      const chapters = [];
-      const audioTracks = [];
-      const genreSet = new Set(NOVEL_CONFIG.defaultGenres);
-
-      (entries || []).forEach((entry, index) => {
-        const title = (entry.title && entry.title.$t ? entry.title.$t : `Judul ${index + 1}`).trim();
-        const contentHtml =
-          (entry.content && entry.content.$t) ||
-          (entry.summary && entry.summary.$t) ||
-          "";
-        const labels = (entry.category || [])
-          .map((c) => (c.term || "").trim())
-          .filter(Boolean);
-        const lowerLabels = labels.map((l) => l.toLowerCase());
-        const publishedAt = entry.published && entry.published.$t ? entry.published.$t : "";
-
-        const foundAudios = extractAudioUrls(contentHtml);
-        if (lowerLabels.includes("musik") || foundAudios.length > 0) {
-          foundAudios.forEach((url, aIdx) => {
-            audioTracks.push({
-              id: `${slugify(title) || "track"}-${aIdx}`,
-              title: foundAudios.length > 1 ? `${title} (${aIdx + 1})` : title,
-              url
-            });
-          });
+      if (btnGenre && btnBookmark) {
+        if (activeSideTab === "genre") {
+          btnGenre.className = "w-full text-left px-3.5 py-2.5 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer";
+          btnBookmark.className = "w-full text-left px-3.5 py-2.5 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs sm:text-sm font-bold cursor-pointer";
+        } else {
+          btnBookmark.className = "w-full text-left px-3.5 py-2.5 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer";
+          btnGenre.className = "w-full text-left px-3.5 py-2.5 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs sm:text-sm font-bold cursor-pointer";
         }
+      }
+      renderSidePanelContent();
+    }
 
-        const isChapter =
-          lowerLabels.includes("chapter") ||
-          lowerLabels.includes("bab") ||
-          /^bab\s*\d+/i.test(title);
+    function renderSidePanelContent() {
+      const host = document.getElementById("sidePanelContent");
+      if (!host) return;
 
-        if (isChapter) {
-          const seriesMatch = labels.find(
-            (l) => !["chapter", "bab", "series", "novel", "tamat", "berlanjut", "musik"].includes(l.toLowerCase())
-          );
-          const seriesSlug = slugify(seriesMatch || title.split(/\s+bab\s+/i)[0] || "novel-utama");
-          chapters.push({
-            slug: slugify(`${seriesSlug}-${title}-${index}`),
-            seriesSlug,
-            title,
-            contentHtml,
-            publishedAt
-          });
+      if (activeSideTab === "bookmark") {
+        const bookmarkedNovels = allNovels.filter((n) => bookmarks.includes(n.id));
+        if (!bookmarkedNovels.length) {
+          host.innerHTML = `
+            <div class="p-3 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] text-xs text-[var(--pastel-muted)]">
+              Belum ada novel di bookmark.
+            </div>
+          `;
           return;
         }
-
-        const isSeries =
-          lowerLabels.includes("series") ||
-          lowerLabels.includes("novel") ||
-          !lowerLabels.includes("musik");
-
-        if (isSeries) {
-          const slug = slugify(title) || `novel-${index + 1}`;
-          const isTamat = lowerLabels.includes("tamat") || /tamat/i.test(title);
-          const novelGenres = labels.filter(
-            (l) => !["series", "novel", "tamat", "berlanjut", "populer", "terbaru", "musik"].includes(l.toLowerCase())
-          );
-          novelGenres.forEach((g) => genreSet.add(g));
-
-          seriesMap.set(slug, {
-            slug,
-            title,
-            cover: extractCoverImage(contentHtml, title),
-            synopsis: extractSynopsis(contentHtml),
-            authorLine: extractAuthorLine(contentHtml),
-            status: isTamat ? "Tamat" : "Berlanjut",
-            genres: novelGenres.length ? novelGenres : ["Drama"],
-            publishedAt,
-            views: Number(readCounts[slug]) || Math.max(10, (entries.length - index) * 15)
-          });
-        }
-      });
-
-      APP_STATE.seriesList = Array.from(seriesMap.values());
-      APP_STATE.chapterList = chapters;
-      APP_STATE.audioTracks = audioTracks;
-      APP_STATE.genres = Array.from(genreSet);
-    }
-
-    function getPopularSeries(limit) {
-      const sorted = [...APP_STATE.seriesList].sort((a, b) => {
-        const countA = (Number(readCounts[a.slug]) || 0) + (Number(a.views) || 0);
-        const countB = (Number(readCounts[b.slug]) || 0) + (Number(b.views) || 0);
-        return countB - countA;
-      });
-      return typeof limit === "number" ? sorted.slice(0, limit) : sorted;
-    }
-
-    function getLatestSeries(limit) {
-      const sorted = [...APP_STATE.seriesList].sort((a, b) => {
-        const timeA = Date.parse(a.publishedAt || "") || 0;
-        const timeB = Date.parse(b.publishedAt || "") || 0;
-        return timeB - timeA;
-      });
-      return typeof limit === "number" ? sorted.slice(0, limit) : sorted;
-    }
-
-    function getSeriesChapters(seriesSlug) {
-      return APP_STATE.chapterList.filter((ch) => ch.seriesSlug === seriesSlug);
-    }
-
-    function loadBloggerJsonp(baseUrl) {
-      return new Promise((resolve) => {
-        const cbName = `kbBloggerFeedCb_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-        const timer = setTimeout(() => {
-          cleanup();
-          resolve(null);
-        }, 6000);
-
-        function cleanup() {
-          clearTimeout(timer);
-          try {
-            delete window[cbName];
-          } catch (e) {}
-          if (scriptEl && scriptEl.parentNode) {
-            scriptEl.parentNode.removeChild(scriptEl);
-          }
-        }
-
-        window[cbName] = function (data) {
-          cleanup();
-          resolve(data);
-        };
-
-        const scriptEl = document.createElement("script");
-        scriptEl.src = `${baseUrl}/feeds/posts/default?alt=json-in-script&max-results=150&callback=${cbName}`;
-        scriptEl.onerror = () => {
-          cleanup();
-          resolve(null);
-        };
-        document.body.appendChild(scriptEl);
-      });
-    }
-
-    async function loadBloggerData() {
-      const baseUrl = String(NOVEL_CONFIG.bloggerUrl || "").trim().replace(/\/+$/, "");
-      if (!baseUrl) {
-        APP_STATE.feedLoaded = true;
-        renderCurrentView();
+        host.innerHTML = bookmarkedNovels
+          .map(
+            (n) => `
+              <button
+                type="button"
+                onclick="toggleMobileMenu(false); openNovelDetail('${escapeHtml(n.id)}');"
+                class="w-full text-left p-2.5 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] flex items-center gap-2.5 cursor-pointer"
+              >
+                ${
+                  n.cover
+                    ? `<img src="${escapeHtml(n.cover)}" alt="${escapeHtml(n.title)}" class="w-9 h-12 rounded-lg object-cover object-top shrink-0" />`
+                    : `<div class="w-9 h-12 rounded-lg bg-[var(--pastel-soft)] shrink-0"></div>`
+                }
+                <div class="min-w-0">
+                  <div class="text-xs font-bold truncate">${escapeHtml(n.title)}</div>
+                  <div class="text-[11px] text-[var(--pastel-muted)] truncate">${escapeHtml(n.author || "Anonim")}</div>
+                </div>
+              </button>
+            `
+          )
+          .join("");
         return;
       }
 
-      let data = null;
-      try {
-        const res = await fetch(`${baseUrl}/feeds/posts/default?alt=json&max-results=150`);
-        if (res.ok) {
-          data = await res.json();
+      const genres = getAllGenres();
+      const matchingByGenre = selectedSideGenre
+        ? allNovels.filter((n) =>
+            (n.genres || []).some((g) => String(g).toLowerCase() === selectedSideGenre.toLowerCase())
+          )
+        : [];
+
+      host.innerHTML = `
+        <div class="flex flex-wrap gap-1.5">
+          ${genres
+            .map((g) => {
+              const active = selectedSideGenre.toLowerCase() === g.toLowerCase();
+              return `
+                <button
+                  type="button"
+                  onclick="selectedSideGenre = ${active ? "''" : `'${escapeHtml(g)}'`}; renderSidePanelContent();"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer ${
+                    active
+                      ? "bg-[var(--pastel-accent)] text-white"
+                      : "bg-[var(--pastel-soft)] border border-[var(--pastel-border)]"
+                  }"
+                >
+                  ${escapeHtml(g)}
+                </button>
+              `;
+            })
+            .join("")}
+        </div>
+        ${
+          selectedSideGenre
+            ? `<div class="pt-2 space-y-2">
+                <div class="text-[11px] font-bold text-[var(--pastel-muted)]">Genre: ${escapeHtml(selectedSideGenre)} (${matchingByGenre.length})</div>
+                ${
+                  matchingByGenre.length
+                    ? matchingByGenre
+                        .map(
+                          (n) => `
+                            <button
+                              type="button"
+                              onclick="toggleMobileMenu(false); openNovelDetail('${escapeHtml(n.id)}');"
+                              class="w-full text-left p-2 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] text-xs font-bold truncate cursor-pointer block"
+                            >
+                              ${escapeHtml(n.title)}
+                            </button>
+                          `
+                        )
+                        .join("")
+                    : `<div class="text-xs text-[var(--pastel-muted)]">Belum ada novel di genre ini.</div>`
+                }
+               </div>`
+            : ""
         }
-      } catch (e) {}
-
-      if (!data) {
-        data = await loadBloggerJsonp(baseUrl);
-      }
-
-      const entries = (data && data.feed && data.feed.entry) || [];
-      parseBloggerEntries(entries);
-      APP_STATE.feedLoaded = true;
-      renderCurrentView();
+      `;
     }
 
-    function setActiveNavButton(activeKey) {
-      const keys = ["home", "catalog", "genre", "bookmark"];
-      keys.forEach((k) => {
-        const btn = document.getElementById(`nav-${k}`);
+    function syncNavHighlight() {
+      const map = {
+        home: "nav-home",
+        catalog: "nav-catalog",
+        genre: "nav-genre",
+        bookmark: "nav-bookmark"
+      };
+      Object.entries(map).forEach(([viewName, btnId]) => {
+        const btn = document.getElementById(btnId);
         if (!btn) return;
-        if (k === activeKey) {
-          btn.className = "px-3.5 py-1.5 rounded-xl bg-[var(--pastel-accent)] text-white whitespace-nowrap cursor-pointer";
-        } else {
-          btn.className = "px-3.5 py-1.5 rounded-xl text-[var(--pastel-text)] hover:bg-[var(--pastel-soft)] whitespace-nowrap cursor-pointer";
-        }
+        const isActive = currentView === viewName;
+        btn.className = isActive
+          ? "px-3.5 py-1.5 rounded-xl bg-[var(--pastel-accent)] text-white shrink-0 cursor-pointer"
+          : "px-3.5 py-1.5 rounded-xl hover:bg-[var(--pastel-soft)] text-[var(--pastel-muted)] shrink-0 cursor-pointer";
       });
     }
 
-    function stopHeroTimer() {
-      if (heroIntervalId) {
-        clearInterval(heroIntervalId);
-        heroIntervalId = null;
+    function goHome() {
+      currentView = "home";
+      activeNovelId = null;
+      activeChapterId = null;
+      selectedLetter = "";
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openCatalogView() {
+      currentView = "catalog";
+      activeNovelId = null;
+      activeChapterId = null;
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openGenreView(genreName) {
+      currentView = "genre";
+      activeGenre = String(genreName || "");
+      activeNovelId = null;
+      activeChapterId = null;
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openBookmarkView() {
+      currentView = "bookmark";
+      activeNovelId = null;
+      activeChapterId = null;
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openNovelDetail(novelId) {
+      currentView = "detail";
+      activeNovelId = novelId;
+      activeChapterId = null;
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openChapterReader(novelId, chapterId) {
+      currentView = "reader";
+      activeNovelId = novelId;
+      activeChapterId = chapterId;
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function handleHeaderSearch(val) {
+      searchQuery = String(val || "");
+      if (currentView !== "home" && currentView !== "catalog") {
+        currentView = "home";
+      }
+      renderView();
+      const input = document.getElementById("headerSearchInput");
+      if (input && document.activeElement !== input && input.value !== searchQuery) {
+        input.value = searchQuery;
       }
     }
 
-    function startHeroTimer(totalSlides) {
-      stopHeroTimer();
-      if (APP_STATE.view !== "home" || APP_STATE.homeSectionMode !== "all" || totalSlides <= 1) return;
-      heroIntervalId = setInterval(() => {
-        const topFiveCount = Math.min(5, getPopularSeries().length);
-        if (topFiveCount > 1 && APP_STATE.view === "home" && APP_STATE.homeSectionMode === "all") {
-          APP_STATE.heroSlideIndex = (APP_STATE.heroSlideIndex + 1) % topFiveCount;
-          renderCurrentView();
+    function toggleBookmark(novelId) {
+      const idx = bookmarks.indexOf(novelId);
+      if (idx >= 0) {
+        bookmarks.splice(idx, 1);
+      } else {
+        bookmarks.push(novelId);
+      }
+      try {
+        localStorage.setItem(STORAGE_KEYS.bookmarks, JSON.stringify(bookmarks));
+      } catch (_err) {}
+      renderView();
+      if (sideMenuOpen && activeSideTab === "bookmark") {
+        renderSidePanelContent();
+      }
+    }
+
+    function getAllGenres() {
+      const set = new Map();
+      DEFAULT_GENRES.forEach((g) => set.set(g.toLowerCase(), g));
+      allNovels.forEach((n) => {
+        (n.genres || []).forEach((g) => {
+          const clean = String(g || "").trim();
+          if (clean && !set.has(clean.toLowerCase())) {
+            set.set(clean.toLowerCase(), clean);
+          }
+        });
+      });
+      return Array.from(set.values());
+    }
+
+    function getPopularNovels(limit) {
+      const sorted = [...allNovels].sort((a, b) => (b.views || 0) - (a.views || 0));
+      return typeof limit === "number" ? sorted.slice(0, limit) : sorted;
+    }
+
+    function getLatestNovels(limit) {
+      const sorted = [...allNovels].sort((a, b) => (b.publishedMs || 0) - (a.publishedMs || 0));
+      return typeof limit === "number" ? sorted.slice(0, limit) : sorted;
+    }
+
+    function getChaptersForNovel(novelId) {
+      return allChapters
+        .filter((c) => c.novelId === novelId)
+        .sort((a, b) => (a.order || 0) - (b.order || 0) || (a.publishedMs || 0) - (b.publishedMs || 0));
+    }
+
+    function renderStatusBadge(status) {
+      const normalized = String(status || "").toLowerCase();
+      if (normalized.includes("tamat")) {
+        return `<span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[11px] font-bold shadow-sm">Tamat</span>`;
+      }
+      return `<span class="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-bold shadow-sm">Berlanjut</span>`;
+    }
+
+    function renderNovelCard(novel) {
+      const isBookmarked = bookmarks.includes(novel.id);
+      const chapCount = getChaptersForNovel(novel.id).length;
+      const primaryGenre = (novel.genres && novel.genres[0]) || "Novel";
+
+      return `
+        <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl overflow-hidden flex flex-col hover:border-[var(--pastel-accent)] transition-colors">
+          <div class="relative w-full aspect-[3/4] bg-[var(--pastel-soft)] overflow-hidden">
+            ${
+              novel.cover
+                ? `<img
+                    src="${escapeHtml(novel.cover)}"
+                    alt="${escapeHtml(novel.title)}"
+                    onclick="openNovelDetail('${escapeHtml(novel.id)}')"
+                    class="w-full h-full object-cover object-top cursor-pointer block"
+                   />`
+                : `<div
+                    onclick="openNovelDetail('${escapeHtml(novel.id)}')"
+                    class="w-full h-full flex items-center justify-center p-3 text-center text-xs font-bold text-[var(--pastel-muted)] cursor-pointer"
+                   >
+                    ${escapeHtml(novel.title)}
+                   </div>`
+            }
+            <div class="absolute top-2 left-2">
+              ${renderStatusBadge(novel.status)}
+            </div>
+            <button
+              type="button"
+              onclick="toggleBookmark('${escapeHtml(novel.id)}')"
+              aria-label="Bookmark ${escapeHtml(novel.title)}"
+              class="absolute top-2 right-2 w-8 h-8 rounded-full bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold flex items-center justify-center cursor-pointer ${
+                isBookmarked ? "text-amber-500" : "text-[var(--pastel-muted)]"
+              }"
+            >
+              ${isBookmarked ? "&#9733;" : "&#9734;"}
+            </button>
+          </div>
+          <div class="p-3 flex-1 flex flex-col justify-between">
+            <h3
+              onclick="openNovelDetail('${escapeHtml(novel.id)}')"
+              class="text-sm font-extrabold leading-snug line-clamp-2 mb-2 cursor-pointer hover:text-[var(--pastel-accent)]"
+            >
+              ${escapeHtml(novel.title)}
+            </h3>
+            <div class="flex items-center justify-between gap-2 text-[11px] text-[var(--pastel-muted)]">
+              <span class="px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] font-semibold truncate">
+                ${escapeHtml(primaryGenre)}
+              </span>
+              <span class="shrink-0">${chapCount} Bab</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderHeroSlideshow() {
+      const slides = getPopularNovels(5);
+      if (!slides.length) {
+        return `
+          <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 mb-5 text-center">
+            <h2 class="text-base font-extrabold mb-1">Belum Ada Novel Ditampilkan</h2>
+            <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">
+              Pastikan feed Blogger aktif dan memiliki postingan novel.
+            </p>
+          </div>
+        `;
+      }
+
+      if (heroIndex >= slides.length) heroIndex = 0;
+      const item = slides[heroIndex];
+
+      return `
+        <div
+          class="mb-5 w-full min-h-[210px] sm:min-h-[240px] sm:aspect-[16/7] rounded-2xl border border-[var(--pastel-border)] p-4 sm:p-6 flex items-center overflow-hidden"
+          style="background: linear-gradient(125deg, rgba(37, 99, 235, 0.14) 0%, rgba(59, 130, 246, 0.05) 100%);"
+        >
+          <div class="w-full flex flex-row items-center gap-4 sm:gap-6">
+            <div class="w-24 sm:w-32 aspect-[3/4] rounded-xl overflow-hidden bg-[var(--pastel-soft)] border border-[var(--pastel-border)] shrink-0">
+              ${
+                item.cover
+                  ? `<img
+                      src="${escapeHtml(item.cover)}"
+                      alt="${escapeHtml(item.title)}"
+                      class="w-full h-full object-cover object-top block"
+                     />`
+                  : `<div class="w-full h-full flex items-center justify-center p-2 text-center text-xs font-bold text-[var(--pastel-muted)]">
+                      ${escapeHtml(item.title)}
+                     </div>`
+              }
+            </div>
+            <div class="flex-1 min-w-0 text-left">
+              <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                <span class="px-2.5 py-0.5 rounded-full bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-[11px] font-bold text-[var(--pastel-accent)]">
+                  Terpopuler #${heroIndex + 1}
+                </span>
+                ${renderStatusBadge(item.status)}
+              </div>
+              <h2 class="text-base sm:text-xl font-extrabold leading-snug line-clamp-1 mb-0.5">
+                ${escapeHtml(item.title)}
+              </h2>
+              <p class="text-xs text-[var(--pastel-muted)] truncate mb-1.5">
+                Penulis: ${escapeHtml(item.author || "Anonim")}
+              </p>
+              <p class="text-xs sm:text-sm text-[var(--pastel-muted)] line-clamp-2 mb-3">
+                ${escapeHtml(item.synopsis || "Sinopsis belum tersedia.")}
+              </p>
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onclick="openNovelDetail('${escapeHtml(item.id)}')"
+                  class="px-3.5 py-1.5 rounded-xl bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white text-xs sm:text-sm font-bold cursor-pointer"
+                >
+                  Baca Novel
+                </button>
+                <button
+                  type="button"
+                  onclick="prevHeroSlide()"
+                  aria-label="Slide Sebelumnya"
+                  class="w-8 h-8 rounded-full bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold flex items-center justify-center cursor-pointer"
+                >
+                  &lt;
+                </button>
+                <span class="text-xs font-bold px-1">${heroIndex + 1} / ${slides.length}</span>
+                <button
+                  type="button"
+                  onclick="nextHeroSlide()"
+                  aria-label="Slide Berikutnya"
+                  class="w-8 h-8 rounded-full bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold flex items-center justify-center cursor-pointer"
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function nextHeroSlide() {
+      const total = getPopularNovels(5).length;
+      if (!total) return;
+      heroIndex = (heroIndex + 1) % total;
+      if (currentView === "home") renderView();
+    }
+
+    function prevHeroSlide() {
+      const total = getPopularNovels(5).length;
+      if (!total) return;
+      heroIndex = (heroIndex - 1 + total) % total;
+      if (currentView === "home") renderView();
+    }
+
+    function startHeroAutoSlide() {
+      if (heroTimer) clearInterval(heroTimer);
+      heroTimer = setInterval(() => {
+        if (currentView === "home" && getPopularNovels(5).length > 1) {
+          heroIndex = (heroIndex + 1) % getPopularNovels(5).length;
+          renderView();
         }
       }, 5000);
     }
 
-    function nextHeroSlide() {
-      const topFiveCount = Math.min(5, getPopularSeries().length);
-      if (!topFiveCount) return;
-      APP_STATE.heroSlideIndex = (APP_STATE.heroSlideIndex + 1) % topFiveCount;
-      renderCurrentView();
-    }
+    function renderHomeView() {
+      const q = String(searchQuery || "").trim().toLowerCase();
+      const searchResults = q
+        ? allNovels.filter(
+            (n) =>
+              (n.title || "").toLowerCase().includes(q) ||
+              (n.author || "").toLowerCase().includes(q) ||
+              (n.genres || []).some((g) => String(g).toLowerCase().includes(q))
+          )
+        : null;
 
-    function prevHeroSlide() {
-      const topFiveCount = Math.min(5, getPopularSeries().length);
-      if (!topFiveCount) return;
-      APP_STATE.heroSlideIndex = (APP_STATE.heroSlideIndex - 1 + topFiveCount) % topFiveCount;
-      renderCurrentView();
-    }
-
-    function goHomePage(event) {
-      if (event) event.preventDefault();
-      APP_STATE.view = "home";
-      APP_STATE.homeSectionMode = "all";
-      APP_STATE.selectedGenre = "";
-      setActiveNavButton("home");
-      renderCurrentView();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function openSectionList(mode) {
-      APP_STATE.view = "home";
-      APP_STATE.homeSectionMode = mode;
-      setActiveNavButton("home");
-      renderCurrentView();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function openCatalogAZPage(event) {
-      if (event) event.preventDefault();
-      stopHeroTimer();
-      APP_STATE.view = "catalog";
-      APP_STATE.selectedAZLetter = "ALL";
-      setActiveNavButton("catalog");
-      renderCurrentView();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function selectAZLetter(letter) {
-      APP_STATE.selectedAZLetter = letter;
-      renderCurrentView();
-    }
-
-    function openGenrePage(event, presetGenre) {
-      if (event) event.preventDefault();
-      stopHeroTimer();
-      APP_STATE.view = "genre";
-      APP_STATE.selectedGenre = typeof presetGenre === "string" ? presetGenre : "";
-      setActiveNavButton("genre");
-      renderCurrentView();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function openBookmarksPage(event) {
-      if (event) event.preventDefault();
-      stopHeroTimer();
-      APP_STATE.view = "bookmark";
-      setActiveNavButton("bookmark");
-      renderCurrentView();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function openNovelDetail(slug) {
-      stopHeroTimer();
-      APP_STATE.view = "detail";
-      APP_STATE.selectedNovelSlug = slug;
-      recordReadCount(slug);
-      setActiveNavButton("catalog");
-      renderCurrentView();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function openChapterReader(novelSlug, chapterSlug) {
-      stopHeroTimer();
-      APP_STATE.view = "reader";
-      APP_STATE.selectedNovelSlug = novelSlug;
-      APP_STATE.selectedChapterSlug = chapterSlug;
-      recordReadCount(novelSlug);
-      setActiveNavButton("catalog");
-      renderCurrentView();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function ensureAudioPlayer() {
-      if (!bgAudioPlayer) {
-        bgAudioPlayer = new Audio();
-        bgAudioPlayer.loop = false;
-        bgAudioPlayer.addEventListener("ended", () => {
-          if (APP_STATE.audioTracks.length > 0) {
-            currentAudioIndex = (currentAudioIndex + 1) % APP_STATE.audioTracks.length;
-            bgAudioPlayer.src = APP_STATE.audioTracks[currentAudioIndex].url;
-            bgAudioPlayer.play().catch(() => {});
-            renderCurrentView();
-          }
-        });
-      }
-      return bgAudioPlayer;
-    }
-
-    function toggleMusicTrack(index) {
-      const tracks = APP_STATE.audioTracks || [];
-      if (!tracks.length) return;
-      const player = ensureAudioPlayer();
-      const targetIdx = typeof index === "number" ? index : currentAudioIndex;
-      if (currentAudioIndex === targetIdx && !player.paused) {
-        player.pause();
-      } else {
-        currentAudioIndex = targetIdx;
-        if (player.src !== tracks[currentAudioIndex].url) {
-          player.src = tracks[currentAudioIndex].url;
-        }
-        player.play().catch(() => {});
-      }
-      renderCurrentView();
-    }
-
-    function renderMusicBar() {
-      const tracks = APP_STATE.audioTracks || [];
-      if (!tracks.length) return "";
-      const player = ensureAudioPlayer();
-      const isPlaying = !player.paused && Boolean(player.src);
-      const activeTrack = tracks[currentAudioIndex] || tracks[0];
+      const popularList = getPopularNovels(4);
+      const latestList = getLatestNovels(4);
 
       return `
-        <section class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-4 mb-5 flex flex-wrap items-center justify-between gap-3 shadow-sm">
-          <div class="min-w-0 flex-1">
-            <p class="text-[11px] font-bold uppercase tracking-wider text-[var(--pastel-accent)]">Musik Latar Home</p>
-            <p class="text-sm font-bold text-[var(--pastel-text)] truncate">${escapeHtml(activeTrack.title)}</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              onclick="toggleMusicTrack(currentAudioIndex)"
-              class="px-3.5 py-1.5 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer"
-            >
-              ${isPlaying ? "Jeda" : "Putar"}
-            </button>
-            ${
-              tracks.length > 1
-                ? `<button type="button" onclick="toggleMusicTrack((currentAudioIndex + 1) % APP_STATE.audioTracks.length)" class="px-3 py-1.5 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs font-bold cursor-pointer">Lagu Berikutnya &rsaquo;</button>`
-                : ""
-            }
-          </div>
-        </section>
-      `;
-    }
-
-    function renderStatusBadge(statusText) {
-      const isTamat = String(statusText || "").toLowerCase() === "tamat";
-      if (isTamat) {
-        return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-600 text-white border border-emerald-700 shadow-sm">Tamat</span>`;
-      }
-      return `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-600 text-white border border-blue-700 shadow-sm">Berlanjut</span>`;
-    }
-
-    function renderPosterCard(novel) {
-      const saved = bookmarkedSlugs.includes(novel.slug);
-      const chapterCount = getSeriesChapters(novel.slug).length;
-
-      return `
-        <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl overflow-hidden shadow-sm hover:border-[var(--pastel-accent)] transition flex flex-col">
-          <div class="relative w-full aspect-[3/4] bg-[var(--pastel-soft)] overflow-hidden">
-            <button
-              type="button"
-              onclick="openNovelDetail('${escapeHtml(novel.slug)}')"
-              class="block w-full h-full cursor-pointer text-left"
-            >
-              <img
-                src="${escapeHtml(novel.cover)}"
-                alt="${escapeHtml(novel.title)}"
-                onerror="this.onerror=null;this.src='https://placehold.co/600x800/dcebfa/162b4d?text=Poster';"
-                class="w-full h-full object-cover object-top block hover:scale-105 transition duration-300"
-              />
-            </button>
-            <div class="absolute top-2.5 left-2.5">
-              ${renderStatusBadge(novel.status)}
-            </div>
-            <button
-              type="button"
-              aria-label="Bookmark"
-              onclick="toggleBookmark('${escapeHtml(novel.slug)}')"
-              class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-[var(--pastel-card)] border border-[var(--pastel-border)] shadow-sm flex items-center justify-center text-sm font-bold cursor-pointer ${
-                saved ? "text-amber-500" : "text-[var(--pastel-muted)]"
-              }"
-            >
-              ${saved ? "&#9733;" : "&#9734;"}
-            </button>
-          </div>
-          <div class="p-3.5 flex-1 flex flex-col justify-between gap-2">
-            <div>
-              <h3 class="text-sm font-bold text-[var(--pastel-text)] leading-snug line-clamp-2">
-                <button type="button" onclick="openNovelDetail('${escapeHtml(novel.slug)}')" class="text-left hover:text-[var(--pastel-accent)] cursor-pointer">
-                  ${escapeHtml(novel.title)}
-                </button>
-              </h3>
-              ${novel.authorLine ? `<p class="text-[11px] text-[var(--pastel-muted)] truncate mt-0.5">${escapeHtml(novel.authorLine)}</p>` : ""}
-            </div>
-            <div class="flex items-center justify-between gap-1.5 pt-1 text-[11px] text-[var(--pastel-muted)]">
-              <button
-                type="button"
-                onclick="openGenrePage(event, '${escapeHtml((novel.genres && novel.genres[0]) || "Drama")}')"
-                class="px-2 py-0.5 rounded-lg bg-[var(--pastel-soft)] text-[var(--pastel-accent)] font-semibold truncate cursor-pointer"
-              >
-                ${escapeHtml((novel.genres && novel.genres[0]) || "Drama")}
-              </button>
-              <span class="shrink-0">${chapterCount} Bab</span>
-            </div>
-          </div>
-        </article>
-      `;
-    }
-
-    function renderHeroSlideshow(topFive) {
-      if (!topFive.length) return "";
-      const idx = APP_STATE.heroSlideIndex % topFive.length;
-      const item = topFive[idx];
-
-      return `
-        <section class="relative w-full rounded-3xl overflow-hidden border border-[var(--pastel-border)] shadow-sm mb-6">
-          <div
-            class="absolute inset-0 bg-cover bg-center scale-115 blur-xl opacity-55 pointer-events-none"
-            style="background-image: url('${escapeHtml(item.cover)}');"
-          ></div>
-          <div class="relative w-full hero-slide-enter slideshow-transparent-body p-4 sm:p-5 flex items-center gap-4 sm:gap-5">
-            <button
-              type="button"
-              onclick="openNovelDetail('${escapeHtml(item.slug)}')"
-              class="w-32 sm:w-44 aspect-[3/4] rounded-2xl overflow-hidden border border-[var(--pastel-border)] shadow-md cursor-pointer bg-[var(--pastel-soft)] shrink-0"
-            >
-              <img
-                src="${escapeHtml(item.cover)}"
-                alt="${escapeHtml(item.title)}"
-                onerror="this.onerror=null;this.src='https://placehold.co/600x800/dcebfa/162b4d?text=Poster';"
-                class="w-full h-full object-cover object-top block"
-              />
-            </button>
-
-            <div class="min-w-0 flex-1 flex flex-col justify-between self-stretch py-0.5">
-              <div>
-                <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
-                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[var(--pastel-card)] text-[var(--pastel-accent)] border border-[var(--pastel-border)]">
-                    Terpopuler #${idx + 1}
-                  </span>
-                  ${renderStatusBadge(item.status)}
-                </div>
-
-                <h1 class="text-base sm:text-xl font-extrabold text-[var(--pastel-text)] leading-tight line-clamp-2">
-                  <button type="button" onclick="openNovelDetail('${escapeHtml(item.slug)}')" class="text-left hover:text-[var(--pastel-accent)] cursor-pointer">
-                    ${escapeHtml(item.title)}
-                  </button>
-                </h1>
-
-                ${item.authorLine ? `<p class="text-[11px] sm:text-xs text-[var(--pastel-muted)] truncate mt-0.5">${escapeHtml(item.authorLine)}</p>` : ""}
-
-                <p class="text-xs sm:text-sm text-[var(--pastel-muted)] line-clamp-2 mt-1.5">
-                  ${escapeHtml(item.synopsis)}
-                </p>
-              </div>
-
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-3">
-                <button
-                  type="button"
-                  onclick="openNovelDetail('${escapeHtml(item.slug)}')"
-                  class="px-3.5 py-2 rounded-xl bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white text-xs font-bold cursor-pointer"
-                >
-                  Baca Novel
-                </button>
-                <div class="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onclick="prevHeroSlide()"
-                    aria-label="Slide Sebelumnya"
-                    class="w-8 h-8 rounded-full bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold cursor-pointer"
-                  >
-                    &lsaquo;
-                  </button>
-                  <span class="text-xs font-bold text-[var(--pastel-text)] px-1">${idx + 1}/${topFive.length}</span>
-                  <button
-                    type="button"
-                    onclick="nextHeroSlide()"
-                    aria-label="Slide Berikutnya"
-                    class="w-8 h-8 rounded-full bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold cursor-pointer"
-                  >
-                    &rsaquo;
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      `;
-    }
-
-    function renderAdSlot(slotName) {
-      return `
-        <div class="my-5">
-          <p class="text-[10px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] text-center mb-1.5">Iklan</p>
-          <div class="ad-slot-card">
-            <p class="text-xs text-[var(--pastel-muted)]">
-              Wadah Slot Iklan <code class="px-1.5 py-0.5 rounded bg-[var(--pastel-soft)] text-[var(--pastel-text)]">${escapeHtml(slotName)}</code>
-            </p>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderHomeView(viewport) {
-      const popularAll = getPopularSeries();
-      const latestAll = getLatestSeries();
-      const topFive = popularAll.slice(0, 5);
-
-      if (APP_STATE.homeSectionMode === "popular") {
-        stopHeroTimer();
-        viewport.innerHTML = `
-          <div class="flex items-center justify-between gap-3 mb-5">
-            <div>
-              <h1 class="text-xl sm:text-2xl font-extrabold">Semua Novel Terpopuler</h1>
-              <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Diurutkan berdasarkan jumlah pembaca terbanyak.</p>
-            </div>
-            <button
-              type="button"
-              onclick="goHomePage()"
-              class="px-3.5 py-2 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold hover:border-[var(--pastel-accent)] cursor-pointer"
-            >
-              &larr; Kembali ke Home
-            </button>
-          </div>
-          ${
-            popularAll.length
-              ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${popularAll.map(renderPosterCard).join("")}</div>`
-              : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-sm text-[var(--pastel-muted)]">Belum ada novel terpopuler.</div>`
-          }
-        `;
-        return;
-      }
-
-      if (APP_STATE.homeSectionMode === "latest") {
-        stopHeroTimer();
-        viewport.innerHTML = `
-          <div class="flex items-center justify-between gap-3 mb-5">
-            <div>
-              <h1 class="text-xl sm:text-2xl font-extrabold">Semua Novel Baru</h1>
-              <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Update cerita terbaru yang baru masuk.</p>
-            </div>
-            <button
-              type="button"
-              onclick="goHomePage()"
-              class="px-3.5 py-2 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold hover:border-[var(--pastel-accent)] cursor-pointer"
-            >
-              &larr; Kembali ke Home
-            </button>
-          </div>
-          ${
-            latestAll.length
-              ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${latestAll.map(renderPosterCard).join("")}</div>`
-              : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-sm text-[var(--pastel-muted)]">Belum ada novel terbaru.</div>`
-          }
-        `;
-        return;
-      }
-
-      const popularPreview = popularAll.slice(0, 4);
-      const latestPreview = latestAll.slice(0, 4);
-
-      viewport.innerHTML = `
-        ${renderHeroSlideshow(topFive)}
-        ${renderMusicBar()}
-        ${renderAdSlot("home_below_hero")}
-
-        <section class="mb-7">
-          <div class="flex items-center justify-between gap-3 mb-3.5 pb-2 border-b border-[var(--pastel-border)]">
-            <div class="flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-xl bg-[var(--pastel-soft)] text-[var(--pastel-accent)] flex items-center justify-center text-sm font-extrabold">&#9733;</span>
-              <div>
-                <h2 class="text-lg sm:text-xl font-extrabold leading-tight">Novel Terpopuler</h2>
-                <p class="text-xs text-[var(--pastel-muted)]">Paling banyak dibaca pembaca</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onclick="openSectionList('popular')"
-              class="text-xs font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer"
-            >
-              Lihat Semua &rarr;
-            </button>
-          </div>
-          ${
-            popularPreview.length
-              ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${popularPreview.map(renderPosterCard).join("")}</div>`
-              : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center space-y-2">
-                   <p class="font-bold text-sm">Belum Ada Novel Ditampilkan</p>
-                   <p class="text-xs text-[var(--pastel-muted)]">Pastikan feed Blogger aktif dan memiliki postingan novel.</p>
-                 </div>`
-          }
-        </section>
-
-        ${renderAdSlot("home_between_popular_latest")}
-
-        <section class="mb-6">
-          <div class="flex items-center justify-between gap-3 mb-3.5 pb-2 border-b border-[var(--pastel-border)]">
-            <div class="flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-xl bg-[var(--pastel-soft)] text-[var(--pastel-accent)] flex items-center justify-center text-sm font-extrabold">&#10024;</span>
-              <div>
-                <h2 class="text-lg sm:text-xl font-extrabold leading-tight">Novel Terbaru</h2>
-                <p class="text-xs text-[var(--pastel-muted)]">Cerita baru rilis &amp; update</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onclick="openSectionList('latest')"
-              class="text-xs font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer"
-            >
-              Lihat Semua &rarr;
-            </button>
-          </div>
-          ${
-            latestPreview.length
-              ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${latestPreview.map(renderPosterCard).join("")}</div>`
-              : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-xs text-[var(--pastel-muted)]">Belum ada novel terbaru.</div>`
-          }
-        </section>
-      `;
-
-      startHeroTimer(topFive.length);
-    }
-
-    function renderCatalogAZView(viewport) {
-      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-      const activeLetter = APP_STATE.selectedAZLetter || "ALL";
-      const sortedAZ = [...APP_STATE.seriesList].sort((a, b) =>
-        String(a.title || "").localeCompare(String(b.title || ""), "id", { sensitivity: "base" })
-      );
-
-      const filtered =
-        activeLetter === "ALL"
-          ? sortedAZ
-          : activeLetter === "#"
-          ? sortedAZ.filter((n) => !/^[A-Za-z]/.test(String(n.title || "").trim()))
-          : sortedAZ.filter((n) => String(n.title || "").trim().toUpperCase().startsWith(activeLetter));
-
-      viewport.innerHTML = `
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <div>
-            <h1 class="text-xl sm:text-2xl font-extrabold">Daftar Novel (A&ndash;Z)</h1>
-            <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Urutan judul dari A sampai Z menyusun ke bawah.</p>
-          </div>
-          <button
-            type="button"
-            onclick="goHomePage()"
-            class="px-3.5 py-2 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold hover:border-[var(--pastel-accent)] cursor-pointer"
-          >
-            &larr; Kembali ke Home
-          </button>
-        </div>
-
-        <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-3 mb-5">
-          <div class="flex flex-wrap gap-1.5">
-            <button
-              type="button"
-              onclick="selectAZLetter('ALL')"
-              class="px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                activeLetter === "ALL"
-                  ? "bg-[var(--pastel-accent)] text-white"
-                  : "bg-[var(--pastel-soft)] text-[var(--pastel-text)]"
-              }"
-            >
-              Semua
-            </button>
-            ${alphabet
-              .map(
-                (ch) => `
-              <button
-                type="button"
-                onclick="selectAZLetter('${ch}')"
-                class="w-8 h-8 rounded-lg text-xs font-bold cursor-pointer ${
-                  activeLetter === ch
-                    ? "bg-[var(--pastel-accent)] text-white"
-                    : "bg-[var(--pastel-soft)] text-[var(--pastel-text)] hover:border-[var(--pastel-accent)]"
-                }"
-              >
-                ${ch}
-              </button>
-            `
-              )
-              .join("")}
-            <button
-              type="button"
-              onclick="selectAZLetter('#')"
-              class="w-8 h-8 rounded-lg text-xs font-bold cursor-pointer ${
-                activeLetter === "#"
-                  ? "bg-[var(--pastel-accent)] text-white"
-                  : "bg-[var(--pastel-soft)] text-[var(--pastel-text)]"
-              }"
-            >
-              #
-            </button>
-          </div>
-        </div>
+        ${renderHeroSlideshow()}
 
         ${
-          filtered.length
-            ? `<div class="space-y-2.5">
-                ${filtered
-                  .map((novel) => {
-                    const firstChar = /^[A-Za-z]/.test(String(novel.title || "").trim())
-                      ? String(novel.title || "").trim().charAt(0).toUpperCase()
-                      : "#";
-                    return `
-                      <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-3.5 flex items-center justify-between gap-3 hover:border-[var(--pastel-accent)] transition">
-                        <div class="flex items-center gap-3 min-w-0">
-                          <span class="w-8 h-8 rounded-xl bg-[var(--pastel-soft)] text-[var(--pastel-accent)] font-extrabold text-sm flex items-center justify-center shrink-0">
-                            ${escapeHtml(firstChar)}
-                          </span>
-                          <div class="min-w-0">
-                            <button
-                              type="button"
-                              onclick="openNovelDetail('${escapeHtml(novel.slug)}')"
-                              class="text-sm sm:text-base font-bold text-[var(--pastel-text)] hover:text-[var(--pastel-accent)] truncate block text-left cursor-pointer"
-                            >
-                              ${escapeHtml(novel.title)}
-                            </button>
-                            ${novel.authorLine ? `<p class="text-xs text-[var(--pastel-muted)] truncate">${escapeHtml(novel.authorLine)}</p>` : ""}
-                          </div>
-                        </div>
-                        <div class="flex items-center gap-2 shrink-0">
-                          ${renderStatusBadge(novel.status)}
-                          <button
-                            type="button"
-                            onclick="openNovelDetail('${escapeHtml(novel.slug)}')"
-                            class="px-3 py-1.5 rounded-xl bg-[var(--pastel-soft)] text-[var(--pastel-accent)] text-xs font-bold cursor-pointer"
-                          >
-                            Baca &rsaquo;
-                          </button>
-                        </div>
-                      </div>
-                    `;
-                  })
-                  .join("")}
+          searchResults
+            ? `<div class="mb-6">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <h2 class="text-base font-extrabold">Hasil Pencarian (${searchResults.length})</h2>
+                  <button
+                    type="button"
+                    onclick="handleHeaderSearch('')"
+                    class="text-xs font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer"
+                  >
+                    Bersihkan
+                  </button>
+                </div>
+                ${
+                  searchResults.length
+                    ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                        ${searchResults.map(renderNovelCard).join("")}
+                       </div>`
+                    : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
+                        Novel tidak ditemukan.
+                       </div>`
+                }
                </div>`
-            : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-sm text-[var(--pastel-muted)]">
-                 Tidak ada judul novel untuk huruf <strong>${escapeHtml(activeLetter)}</strong>.
-               </div>`
+            : ""
         }
+
+        <div class="mb-6">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-extrabold">Novel Terpopuler</h2>
+              <p class="text-xs text-[var(--pastel-muted)]">Paling banyak dibaca pembaca</p>
+            </div>
+            <button
+              type="button"
+              onclick="openCatalogView()"
+              class="text-xs font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer"
+            >
+              Lihat Semua &rarr;
+            </button>
+          </div>
+          ${
+            popularList.length
+              ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                  ${popularList.map(renderNovelCard).join("")}
+                 </div>`
+              : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
+                  Belum ada novel terpopuler.
+                 </div>`
+          }
+        </div>
+
+        <div class="my-6 bg-[var(--pastel-card)] border border-dashed border-[var(--pastel-border)] rounded-2xl p-4 text-center">
+          <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">IKLAN</div>
+          <div class="text-xs sm:text-sm text-[var(--pastel-muted)]">
+            Wadah Slot Iklan <code class="px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] text-[var(--pastel-text)] text-xs">home_below_hero</code>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-extrabold">Novel Terbaru</h2>
+              <p class="text-xs text-[var(--pastel-muted)]">Cerita baru rilis &amp; update</p>
+            </div>
+            <button
+              type="button"
+              onclick="openCatalogView()"
+              class="text-xs font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer"
+            >
+              Lihat Semua &rarr;
+            </button>
+          </div>
+          ${
+            latestList.length
+              ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                  ${latestList.map(renderNovelCard).join("")}
+                 </div>`
+              : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
+                  Belum ada novel terbaru.
+                 </div>`
+          }
+        </div>
       `;
     }
 
-    function renderGenreView(viewport) {
-      const selected = APP_STATE.selectedGenre || "";
-      const list = selected
-        ? APP_STATE.seriesList.filter((n) =>
-            (n.genres || []).some((g) => g.toLowerCase() === selected.toLowerCase())
-          )
-        : APP_STATE.seriesList;
+    function renderCatalogView() {
+      const q = String(searchQuery || "").trim().toLowerCase();
+      let list = [...allNovels].sort((a, b) => (a.title || "").localeCompare(b.title || "", "id"));
 
-      viewport.innerHTML = `
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <div>
-            <h1 class="text-xl sm:text-2xl font-extrabold">Genre Novel</h1>
-            <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Pilih genre untuk menyaring novel.</p>
-          </div>
-          <button
-            type="button"
-            onclick="goHomePage()"
-            class="px-3.5 py-2 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold hover:border-[var(--pastel-accent)] cursor-pointer"
-          >
-            &larr; Kembali ke Home
-          </button>
+      if (q) {
+        list = list.filter(
+          (n) =>
+            (n.title || "").toLowerCase().includes(q) ||
+            (n.author || "").toLowerCase().includes(q)
+        );
+      }
+
+      if (selectedLetter) {
+        list = list.filter((n) =>
+          String(n.title || "")
+            .trim()
+            .toUpperCase()
+            .startsWith(selectedLetter)
+        );
+      }
+
+      return `
+        <div class="mb-4">
+          <h1 class="text-xl sm:text-2xl font-extrabold">Daftar Novel (A&ndash;Z)</h1>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Pilih huruf di atas untuk menyaring judul novel</p>
         </div>
 
-        <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-4 mb-5 flex flex-wrap gap-2">
+        <!-- Baris Tombol Huruf A-Z Ala Keyboard -->
+        <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-3 mb-5 flex flex-wrap gap-1.5">
           <button
             type="button"
-            onclick="openGenrePage(event, '')"
-            class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${
-              !selected
+            onclick="selectedLetter = ''; renderView();"
+            class="px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
+              !selectedLetter
                 ? "bg-[var(--pastel-accent)] text-white"
-                : "bg-[var(--pastel-soft)] text-[var(--pastel-text)]"
+                : "bg-[var(--pastel-soft)] border border-[var(--pastel-border)]"
             }"
           >
-            Semua Genre
+            Semua
           </button>
-          ${APP_STATE.genres
-            .map(
-              (g) => `
-            <button
-              type="button"
-              onclick="openGenrePage(event, '${escapeHtml(g)}')"
-              class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${
-                selected.toLowerCase() === g.toLowerCase()
-                  ? "bg-[var(--pastel-accent)] text-white"
-                  : "bg-[var(--pastel-soft)] text-[var(--pastel-text)]"
-              }"
-            >
-              ${escapeHtml(g)}
-            </button>
-          `
-            )
-            .join("")}
+          ${ALPHABET_LETTERS.map((letter) => {
+            const active = selectedLetter === letter;
+            return `
+              <button
+                type="button"
+                onclick="selectedLetter = ${active ? "''" : `'${letter}'`}; renderView();"
+                class="w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center cursor-pointer ${
+                  active
+                    ? "bg-[var(--pastel-accent)] text-white"
+                    : "bg-[var(--pastel-soft)] border border-[var(--pastel-border)]"
+                }"
+              >
+                ${letter}
+              </button>
+            `;
+          }).join("")}
         </div>
 
         ${
           list.length
-            ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${list.map(renderPosterCard).join("")}</div>`
-            : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-sm text-[var(--pastel-muted)]">Belum ada novel pada genre ini.</div>`
-        }
-      `;
-    }
-
-    function renderBookmarkView(viewport) {
-      const savedNovels = APP_STATE.seriesList.filter((n) => bookmarkedSlugs.includes(n.slug));
-
-      viewport.innerHTML = `
-        <div class="flex items-center justify-between gap-3 mb-5">
-          <div>
-            <h1 class="text-xl sm:text-2xl font-extrabold">Bookmark Saya</h1>
-            <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Novel yang kamu simpan untuk dibaca lagi.</p>
-          </div>
-          <button
-            type="button"
-            onclick="goHomePage()"
-            class="px-3.5 py-2 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold hover:border-[var(--pastel-accent)] cursor-pointer"
-          >
-            &larr; Kembali ke Home
-          </button>
-        </div>
-
-        ${
-          savedNovels.length
-            ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${savedNovels.map(renderPosterCard).join("")}</div>`
-            : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center space-y-3">
-                 <p class="text-sm text-[var(--pastel-muted)]">Belum ada novel yang di-bookmark.</p>
-                 <button type="button" onclick="goHomePage()" class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer">Jelajahi Novel</button>
+            ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                ${list.map(renderNovelCard).join("")}
+               </div>`
+            : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
+                Tidak ada novel yang cocok.
                </div>`
         }
       `;
     }
 
-    function renderDetailView(viewport) {
-      const novel =
-        APP_STATE.seriesList.find((n) => n.slug === APP_STATE.selectedNovelSlug) ||
-        APP_STATE.seriesList[0];
+    function renderGenreView() {
+      const genres = getAllGenres();
+      const filtered = activeGenre
+        ? allNovels.filter((n) =>
+            (n.genres || []).some((g) => String(g).toLowerCase() === activeGenre.toLowerCase())
+          )
+        : allNovels;
 
-      if (!novel) {
-        viewport.innerHTML = `
-          <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center space-y-3">
-            <p class="text-sm text-[var(--pastel-muted)]">Novel tidak ditemukan.</p>
-            <button type="button" onclick="goHomePage()" class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer">&larr; Kembali ke Home</button>
-          </div>
-        `;
-        return;
-      }
+      return `
+        <div class="mb-4">
+          <h1 class="text-xl sm:text-2xl font-extrabold">Genre Novel</h1>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Saring novel berdasarkan genre pilihanmu</p>
+        </div>
 
-      const chapters = getSeriesChapters(novel.slug);
-      const saved = bookmarkedSlugs.includes(novel.slug);
-
-      viewport.innerHTML = `
-        <div class="mb-4 flex items-center justify-between gap-2">
+        <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-3.5 mb-5 flex flex-wrap gap-2">
           <button
             type="button"
-            onclick="goHomePage()"
-            class="px-3.5 py-2 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold hover:border-[var(--pastel-accent)] cursor-pointer"
+            onclick="openGenreView('')"
+            class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${
+              !activeGenre
+                ? "bg-[var(--pastel-accent)] text-white"
+                : "bg-[var(--pastel-soft)] border border-[var(--pastel-border)]"
+            }"
           >
-            &larr; Kembali ke Home
+            Semua Genre
+          </button>
+          ${genres
+            .map((g) => {
+              const active = activeGenre.toLowerCase() === g.toLowerCase();
+              return `
+                <button
+                  type="button"
+                  onclick="openGenreView('${escapeHtml(g)}')"
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${
+                    active
+                      ? "bg-[var(--pastel-accent)] text-white"
+                      : "bg-[var(--pastel-soft)] border border-[var(--pastel-border)]"
+                  }"
+                >
+                  ${escapeHtml(g)}
+                </button>
+              `;
+            })
+            .join("")}
+        </div>
+
+        ${
+          filtered.length
+            ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                ${filtered.map(renderNovelCard).join("")}
+               </div>`
+            : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
+                Belum ada novel untuk genre ini.
+               </div>`
+        }
+      `;
+    }
+
+    function renderBookmarkView() {
+      const savedNovels = allNovels.filter((n) => bookmarks.includes(n.id));
+      return `
+        <div class="mb-4">
+          <h1 class="text-xl sm:text-2xl font-extrabold">Bookmark Saya</h1>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Novel yang kamu simpan di perangkat ini</p>
+        </div>
+
+        ${
+          savedNovels.length
+            ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                ${savedNovels.map(renderNovelCard).join("")}
+               </div>`
+            : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
+                Belum ada novel yang di-bookmark.
+               </div>`
+        }
+      `;
+    }
+
+    function submitNovelComment(event, novelId) {
+      event.preventDefault();
+      const nameInput = document.getElementById("commentNameInput");
+      const bodyInput = document.getElementById("commentBodyInput");
+      if (!nameInput || !bodyInput) return;
+
+      const author = String(nameInput.value || "").trim() || "Pembaca";
+      const text = String(bodyInput.value || "").trim();
+      if (!text) return;
+
+      if (!Array.isArray(commentsMap[novelId])) {
+        commentsMap[novelId] = [];
+      }
+
+      commentsMap[novelId].unshift({
+        id: "cmt_" + Date.now(),
+        author,
+        text,
+        createdAt: new Date().toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric"
+        })
+      });
+
+      try {
+        localStorage.setItem(STORAGE_KEYS.comments, JSON.stringify(commentsMap));
+      } catch (_err) {}
+
+      renderView();
+    }
+
+    function renderDetailView() {
+      const novel = allNovels.find((n) => n.id === activeNovelId);
+      if (!novel) {
+        return `
+          <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 text-center">
+            <p class="text-sm font-bold mb-3">Novel tidak ditemukan.</p>
+            <button
+              type="button"
+              onclick="goHome()"
+              class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer"
+            >
+              Kembali ke Home
+            </button>
+          </div>
+        `;
+      }
+
+      const chapters = getChaptersForNovel(novel.id);
+      const isBookmarked = bookmarks.includes(novel.id);
+      const comments = Array.isArray(commentsMap[novel.id]) ? commentsMap[novel.id] : [];
+
+      return `
+        <div class="mb-4">
+          <button
+            type="button"
+            onclick="goHome()"
+            class="px-3 py-1.5 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold cursor-pointer"
+          >
+            &larr; Kembali
           </button>
         </div>
 
-        <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-3xl p-5 grid grid-cols-1 sm:grid-cols-[170px_minmax(0,1fr)] gap-5 shadow-sm">
-          <div class="w-40 sm:w-full aspect-[3/4] rounded-2xl overflow-hidden border border-[var(--pastel-border)] bg-[var(--pastel-soft)] mx-auto sm:mx-0">
-            <img
-              src="${escapeHtml(novel.cover)}"
-              alt="${escapeHtml(novel.title)}"
-              onerror="this.onerror=null;this.src='https://placehold.co/600x800/dcebfa/162b4d?text=Poster';"
-              class="w-full h-full object-cover object-top block"
-            />
+        <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 mb-5 grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-5">
+          <div class="w-40 sm:w-full aspect-[3/4] rounded-xl overflow-hidden bg-[var(--pastel-soft)] border border-[var(--pastel-border)] mx-auto sm:mx-0">
+            ${
+              novel.cover
+                ? `<img src="${escapeHtml(novel.cover)}" alt="${escapeHtml(novel.title)}" class="w-full h-full object-cover object-top block" />`
+                : `<div class="w-full h-full flex items-center justify-center p-2 text-center text-xs font-bold text-[var(--pastel-muted)]">${escapeHtml(novel.title)}</div>`
+            }
           </div>
-
-          <div class="min-w-0">
+          <div>
             <div class="flex flex-wrap items-center gap-2 mb-2">
               ${renderStatusBadge(novel.status)}
               ${(novel.genres || [])
                 .map(
-                  (g) => `
-                <button
-                  type="button"
-                  onclick="openGenrePage(event, '${escapeHtml(g)}')"
-                  class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--pastel-soft)] text-[var(--pastel-accent)] cursor-pointer"
-                >
-                  ${escapeHtml(g)}
-                </button>
-              `
+                  (g) =>
+                    `<span class="px-2.5 py-0.5 rounded-lg bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-[11px] font-bold">${escapeHtml(g)}</span>`
                 )
                 .join("")}
             </div>
-
-            <h1 class="text-xl sm:text-2xl font-extrabold text-[var(--pastel-text)] leading-tight">${escapeHtml(novel.title)}</h1>
-            ${novel.authorLine ? `<p class="text-xs text-[var(--pastel-muted)] mt-1">${escapeHtml(novel.authorLine)}</p>` : ""}
-
-            <p class="text-sm text-[var(--pastel-muted)] mt-3 leading-relaxed">${escapeHtml(novel.synopsis)}</p>
-
-            <div class="flex flex-wrap items-center gap-2.5 mt-4">
+            <h1 class="text-xl sm:text-2xl font-extrabold mb-1">${escapeHtml(novel.title)}</h1>
+            <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-3">Penulis: ${escapeHtml(novel.author || "Anonim")}</p>
+            <p class="text-xs sm:text-sm leading-relaxed text-[var(--pastel-muted)] mb-4">
+              ${escapeHtml(novel.synopsis || "Sinopsis belum tersedia.")}
+            </p>
+            <div class="flex flex-wrap gap-2">
               ${
                 chapters.length
-                  ? `<button type="button" onclick="openChapterReader('${escapeHtml(novel.slug)}', '${escapeHtml(chapters[0].slug)}')" class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer">Mulai Baca ${escapeHtml(chapters[0].title)}</button>`
+                  ? `<button
+                      type="button"
+                      onclick="openChapterReader('${escapeHtml(novel.id)}', '${escapeHtml(chapters[0].id)}')"
+                      class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer"
+                     >
+                      Mulai Baca
+                     </button>`
                   : ""
               }
               <button
                 type="button"
-                onclick="toggleBookmark('${escapeHtml(novel.slug)}')"
-                class="px-4 py-2 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs font-bold cursor-pointer"
+                onclick="toggleBookmark('${escapeHtml(novel.id)}')"
+                class="px-4 py-2 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs sm:text-sm font-bold cursor-pointer"
               >
-                ${saved ? "&#9733; Tersimpan" : "&#9734; Simpan Bookmark"}
+                ${isBookmarked ? "&#9733; Tersimpan di Bookmark" : "&#9734; Simpan Bookmark"}
               </button>
             </div>
           </div>
-        </article>
+        </div>
 
-        <section class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-4 sm:p-5 mt-5">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-base font-extrabold">Daftar Bab (${chapters.length})</h2>
-            <span class="text-[11px] text-[var(--pastel-muted)]">Geser / gulir ke bawah</span>
-          </div>
+        <!-- Daftar Bab -->
+        <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 mb-5">
+          <h2 class="text-base font-extrabold mb-3">Daftar Bab (${chapters.length})</h2>
           ${
             chapters.length
-              ? `<div class="chapter-scroll-box divide-y divide-[var(--pastel-border)] border border-[var(--pastel-border)] rounded-xl">
+              ? `<div class="divide-y divide-[var(--pastel-border)]">
                   ${chapters
                     .map(
-                      (ch) => `
-                    <button
-                      type="button"
-                      onclick="openChapterReader('${escapeHtml(novel.slug)}', '${escapeHtml(ch.slug)}')"
-                      class="w-full px-3.5 py-2.5 text-left text-xs sm:text-sm font-semibold hover:bg-[var(--pastel-soft)] flex items-center justify-between gap-2 cursor-pointer"
-                    >
-                      <span class="truncate">${escapeHtml(ch.title)}</span>
-                      <span class="text-[var(--pastel-accent)] text-xs font-bold shrink-0">Baca &rsaquo;</span>
-                    </button>
-                  `
+                      (ch, idx) => `
+                        <button
+                          type="button"
+                          onclick="openChapterReader('${escapeHtml(novel.id)}', '${escapeHtml(ch.id)}')"
+                          class="w-full py-3 text-left flex items-center justify-between gap-2 text-xs sm:text-sm font-semibold hover:text-[var(--pastel-accent)] cursor-pointer"
+                        >
+                          <span class="truncate">${idx + 1}. ${escapeHtml(ch.title)}</span>
+                          <span class="text-xs text-[var(--pastel-accent)] shrink-0">Baca &rarr;</span>
+                        </button>
+                      `
                     )
                     .join("")}
                  </div>`
-              : `<p class="text-xs text-[var(--pastel-muted)]">Belum ada bab tersedia untuk novel ini.</p>`
-          }
-        </section>
-      `;
-    }
-
-    function renderReaderView(viewport) {
-      const novel = APP_STATE.seriesList.find((n) => n.slug === APP_STATE.selectedNovelSlug);
-      const chapters = novel ? getSeriesChapters(novel.slug) : [];
-      const chapter =
-        chapters.find((c) => c.slug === APP_STATE.selectedChapterSlug) || chapters[0];
-
-      viewport.innerHTML = `
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <button
-            type="button"
-            onclick="goHomePage()"
-            class="px-3.5 py-2 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold hover:border-[var(--pastel-accent)] cursor-pointer"
-          >
-            &larr; Kembali ke Home
-          </button>
-          ${
-            novel
-              ? `<button type="button" onclick="openNovelDetail('${escapeHtml(novel.slug)}')" class="px-3.5 py-2 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs font-bold cursor-pointer">Detail Novel</button>`
-              : ""
+              : `<p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Belum ada bab tersedia untuk novel ini.</p>`
           }
         </div>
 
-        <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-3xl p-5 sm:p-7 shadow-sm">
-          ${novel ? `<p class="text-xs font-bold text-[var(--pastel-accent)] mb-1">${escapeHtml(novel.title)}</p>` : ""}
-          <h1 class="text-xl sm:text-2xl font-extrabold pb-3 mb-5 border-b border-[var(--pastel-border)]">
-            ${escapeHtml(chapter ? chapter.title : "Bab Novel")}
+        <!-- Kolom Komentar di Detail Novel -->
+        <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5">
+          <h2 class="text-base font-extrabold mb-3">Komentar Pembaca (${comments.length})</h2>
+          <form onsubmit="submitNovelComment(event, '${escapeHtml(novel.id)}')" class="space-y-3 mb-5">
+            <input
+              id="commentNameInput"
+              type="text"
+              placeholder="Nama kamu..."
+              class="w-full px-3.5 py-2 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] text-xs sm:text-sm"
+            />
+            <textarea
+              id="commentBodyInput"
+              rows="3"
+              required
+              placeholder="Tulis komentar tentang novel ini..."
+              class="w-full px-3.5 py-2 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] text-xs sm:text-sm"
+            ></textarea>
+            <button
+              type="submit"
+              class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer"
+            >
+              Kirim Komentar
+            </button>
+          </form>
+
+          ${
+            comments.length
+              ? `<div class="space-y-3">
+                  ${comments
+                    .map(
+                      (c) => `
+                        <div class="p-3.5 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)]">
+                          <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-xs font-extrabold">${escapeHtml(c.author)}</span>
+                            <span class="text-[11px] text-[var(--pastel-muted)]">${escapeHtml(c.createdAt || "")}</span>
+                          </div>
+                          <p class="text-xs sm:text-sm leading-relaxed">${escapeHtml(c.text)}</p>
+                        </div>
+                      `
+                    )
+                    .join("")}
+                 </div>`
+              : `<p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Belum ada komentar. Jadilah yang pertama berkomentar.</p>`
+          }
+        </div>
+      `;
+    }
+
+    function renderReaderView() {
+      const novel = allNovels.find((n) => n.id === activeNovelId);
+      const chapters = getChaptersForNovel(activeNovelId);
+      const idx = chapters.findIndex((c) => c.id === activeChapterId);
+      const chapter = idx >= 0 ? chapters[idx] : chapters[0];
+
+      if (!novel || !chapter) {
+        return `
+          <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 text-center">
+            <p class="text-sm font-bold mb-3">Bab tidak ditemukan.</p>
+            <button
+              type="button"
+              onclick="goHome()"
+              class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer"
+            >
+              Kembali ke Home
+            </button>
+          </div>
+        `;
+      }
+
+      const prevCh = idx > 0 ? chapters[idx - 1] : null;
+      const nextCh = idx >= 0 && idx < chapters.length - 1 ? chapters[idx + 1] : null;
+
+      return `
+        <div class="mb-4 flex items-center justify-between gap-2 flex-wrap">
+          <button
+            type="button"
+            onclick="openNovelDetail('${escapeHtml(novel.id)}')"
+            class="px-3 py-1.5 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-bold cursor-pointer"
+          >
+            &larr; Detail Novel
+          </button>
+          <span class="text-xs font-bold text-[var(--pastel-muted)] truncate">${escapeHtml(novel.title)}</span>
+        </div>
+
+        <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 sm:p-7">
+          <h1 class="text-lg sm:text-2xl font-extrabold pb-4 mb-5 border-b border-[var(--pastel-border)]">
+            ${escapeHtml(chapter.title)}
           </h1>
-          <div class="reader-prose text-base sm:text-lg leading-relaxed space-y-4">
+          <div class="text-sm sm:text-base leading-loose space-y-4">
+            ${chapter.htmlContent || `<p>${escapeHtml(chapter.textContent || "")}</p>`}
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-[var(--pastel-border)] flex items-center justify-between gap-3">
             ${
-              chapter && chapter.contentHtml
-                ? chapter.contentHtml
-                : `<p class="text-sm text-[var(--pastel-muted)]">Isi bab belum tersedia.</p>`
+              prevCh
+                ? `<button
+                    type="button"
+                    onclick="openChapterReader('${escapeHtml(novel.id)}', '${escapeHtml(prevCh.id)}')"
+                    class="px-4 py-2 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs sm:text-sm font-bold cursor-pointer"
+                   >
+                    &larr; Bab Sebelumnya
+                   </button>`
+                : `<span></span>`
+            }
+            ${
+              nextCh
+                ? `<button
+                    type="button"
+                    onclick="openChapterReader('${escapeHtml(novel.id)}', '${escapeHtml(nextCh.id)}')"
+                    class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer"
+                   >
+                    Bab Berikutnya &rarr;
+                   </button>`
+                : `<span></span>`
             }
           </div>
         </article>
       `;
     }
 
-    function renderCurrentView() {
-      const viewport = document.getElementById("appViewport");
-      if (!viewport) return;
+    function renderView() {
+      const host = document.getElementById("appViewport");
+      if (!host) return;
 
-      if (APP_STATE.view === "catalog") {
-        renderCatalogAZView(viewport);
-      } else if (APP_STATE.view === "genre") {
-        renderGenreView(viewport);
-      } else if (APP_STATE.view === "bookmark") {
-        renderBookmarkView(viewport);
-      } else if (APP_STATE.view === "detail") {
-        renderDetailView(viewport);
-      } else if (APP_STATE.view === "reader") {
-        renderReaderView(viewport);
+      syncNavHighlight();
+
+      if (currentView === "catalog") {
+        host.innerHTML = renderCatalogView();
+      } else if (currentView === "genre") {
+        host.innerHTML = renderGenreView();
+      } else if (currentView === "bookmark") {
+        host.innerHTML = renderBookmarkView();
+      } else if (currentView === "detail") {
+        host.innerHTML = renderDetailView();
+      } else if (currentView === "reader") {
+        host.innerHTML = renderReaderView();
       } else {
-        renderHomeView(viewport);
+        host.innerHTML = renderHomeView();
       }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      loadStorage();
+    function extractFirstImageFromHtml(htmlString) {
+      try {
+        const div = document.createElement("div");
+        div.innerHTML = String(htmlString || "");
+        const img = div.querySelector("img");
+        if (img && img.getAttribute("src")) {
+          return img.getAttribute("src").trim();
+        }
+      } catch (_err) {}
+      return "";
+    }
+
+    function stripHtmlToText(htmlString) {
+      try {
+        const div = document.createElement("div");
+        div.innerHTML = String(htmlString || "");
+        return (div.textContent || div.innerText || "").trim();
+      } catch (_err) {
+        return String(htmlString || "").replace(/<[^>]+>/g, " ").trim();
+      }
+    }
+
+    function parseBloggerEntries(entries) {
+      const list = Array.isArray(entries) ? entries : [];
+      const parsedNovels = [];
+      const parsedChapters = [];
+
+      list.forEach((entry, index) => {
+        const rawTitle = (entry.title && entry.title.$t) || `Postingan ${index + 1}`;
+        const rawHtml = (entry.content && entry.content.$t) || (entry.summary && entry.summary.$t) || "";
+        const publishedMs = Date.parse((entry.published && entry.published.$t) || "") || Date.now() - index * 1000;
+        const labels = Array.isArray(entry.category)
+          ? entry.category.map((c) => String(c.term || "").trim()).filter(Boolean)
+          : [];
+
+        const lowerLabels = labels.map((l) => l.toLowerCase());
+        const isChapter = lowerLabels.some((l) => l.includes("bab") || l.includes("chapter"));
+        const status = lowerLabels.some((l) => l.includes("tamat") || l.includes("completed"))
+          ? "Tamat"
+          : "Berlanjut";
+
+        const genres = labels.filter((l) => {
+          const low = l.toLowerCase();
+          return (
+            !low.includes("tamat") &&
+            !low.includes("berlanjut") &&
+            !low.includes("novel") &&
+            !low.includes("bab") &&
+            !low.includes("chapter") &&
+            !low.startsWith("penulis:") &&
+            !low.startsWith("author:")
+          );
+        });
+
+        const authorLabel = labels.find((l) => {
+          const low = l.toLowerCase();
+          return low.startsWith("penulis:") || low.startsWith("author:");
+        });
+        const author = authorLabel
+          ? authorLabel.replace(/^(penulis:|author:)/i, "").trim()
+          : (entry.author && entry.author[0] && entry.author[0].name && entry.author[0].name.$t) || "Anonim";
+
+        const cover = extractFirstImageFromHtml(rawHtml);
+        const plainText = stripHtmlToText(rawHtml);
+        const id = (entry.id && entry.id.$t) || `post_${index}`;
+
+        if (isChapter) {
+          const parentMatch = labels.find((l) => l.toLowerCase().startsWith("novel:"));
+          const parentName = parentMatch ? parentMatch.replace(/^novel:/i, "").trim().toLowerCase() : "";
+          parsedChapters.push({
+            id,
+            title: rawTitle,
+            parentName,
+            order: index + 1,
+            publishedMs,
+            htmlContent: rawHtml,
+            textContent: plainText
+          });
+        } else {
+          parsedNovels.push({
+            id,
+            title: rawTitle,
+            author,
+            status,
+            genres: genres.length ? genres : ["Novel"],
+            cover,
+            synopsis: plainText.slice(0, 180) || "Sinopsis belum tersedia.",
+            views: list.length - index,
+            publishedMs
+          });
+        }
+      });
+
+      parsedChapters.forEach((ch) => {
+        let matchedNovel = parsedNovels.find(
+          (n) => ch.parentName && n.title.toLowerCase().includes(ch.parentName)
+        );
+        if (!matchedNovel) {
+          matchedNovel = parsedNovels.find((n) =>
+            ch.title.toLowerCase().includes(n.title.toLowerCase())
+          );
+        }
+        if (!matchedNovel && parsedNovels.length) {
+          matchedNovel = parsedNovels[0];
+        }
+        ch.novelId = matchedNovel ? matchedNovel.id : "";
+      });
+
+      allNovels = parsedNovels;
+      allChapters = parsedChapters;
+      renderView();
+      if (sideMenuOpen) {
+        renderSidePanelContent();
+      }
+    }
+
+    function handleBloggerJsonp(data) {
+      const entries = (data && data.feed && data.feed.entry) || [];
+      parseBloggerEntries(entries);
+    }
+
+    function loadBloggerData() {
+      const baseUrl = BLOGGER_FEED_URL.replace(/\/+$/, "");
+      const jsonpUrl = `${baseUrl}/feeds/posts/default?alt=json-in-script&max-results=100&callback=handleBloggerJsonp`;
+
+      try {
+        const script = document.createElement("script");
+        script.src = jsonpUrl;
+        script.async = true;
+        script.onerror = function () {
+          fetch(`${baseUrl}/feeds/posts/default?alt=json&max-results=100`)
+            .then((res) => (res.ok ? res.json() : null))
+            .then((json) => {
+              if (json && json.feed && Array.isArray(json.feed.entry)) {
+                parseBloggerEntries(json.feed.entry);
+              } else {
+                renderView();
+              }
+            })
+            .catch(() => {
+              renderView();
+            });
+        };
+        document.body.appendChild(script);
+      } catch (_err) {
+        renderView();
+      }
+    }
+
+    function closePromoAdModal() {
+      const modal = document.getElementById("promoAdModal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
+    function checkTwentyMinutePopup() {
+      try {
+        const now = Date.now();
+        const lastAt = Number(localStorage.getItem(STORAGE_KEYS.lastPopupAt) || "0");
+        if (!lastAt || now - lastAt >= POPUP_INTERVAL_MS) {
+          localStorage.setItem(STORAGE_KEYS.lastPopupAt, String(now));
+          const modal = document.getElementById("promoAdModal");
+          if (modal) {
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+          }
+        }
+      } catch (_err) {}
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadSavedState();
+      renderView();
+      startHeroAutoSlide();
       loadBloggerData();
+      setTimeout(checkTwentyMinutePopup, 1200);
     });
   </script>
 </body>
