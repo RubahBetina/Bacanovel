@@ -191,7 +191,7 @@
     <div id="appViewport"></div>
 
     <!-- Slot Iklan di Antara Postingan dan Footer -->
-    <div class="mt-8 mb-2 bg-[var(--pastel-card)] border border-dashed border-[var(--pastel-border)] rounded-2xl p-4 text-center">
+    <div id="aboveFooterAdSlot" class="mt-8 mb-2 bg-[var(--pastel-card)] border border-dashed border-[var(--pastel-border)] rounded-2xl p-4 text-center">
       <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">IKLAN</div>
       <div class="text-xs sm:text-sm text-[var(--pastel-muted)]">
         Wadah Slot Iklan <code class="px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] text-[var(--pastel-text)] text-xs">above_footer</code>
@@ -231,13 +231,15 @@
       >
         &times;
       </button>
-      <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-accent)] mb-1">
-        Sponsor &amp; Rekomendasi
+      <div id="popupAdBody">
+        <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-accent)] mb-1">
+          Sponsor &amp; Rekomendasi
+        </div>
+        <h3 class="text-base font-extrabold mb-2">Dukung Terus KertasBiru</h3>
+        <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-4">
+          Nikmati cerita berseri favoritmu setiap hari. Slot iklan pop-up ini otomatis dijeda selama 20 menit setelah muncul.
+        </p>
       </div>
-      <h3 class="text-base font-extrabold mb-2">Dukung Terus KertasBiru</h3>
-      <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-4">
-        Nikmati cerita berseri favoritmu setiap hari. Slot iklan pop-up ini otomatis dijeda selama 20 menit setelah muncul.
-      </p>
       <div class="flex justify-end gap-2">
         <button
           type="button"
@@ -251,7 +253,26 @@
   </div>
 
   <script>
-    const BLOGGER_FEED_URL = "https://novelkutest.blogspot.com";
+    /**
+     * Konfigurasi terpusat untuk sumber Blogger & kode iklan.
+     * Jika memakai bundler/CI (GitHub Actions / Vercel / Netlify), nilai ini bisa diinjeksi lewat environment variable.
+     */
+    const RUNTIME_ENV = Object.freeze({
+      BLOGGER_FEED_URL:
+        (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.BLOGGER_FEED_URL) ||
+        "https://novelkutest.blogspot.com",
+      AD_HOME_BELOW_HERO_HTML:
+        (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.AD_HOME_BELOW_HERO_HTML) ||
+        "",
+      AD_ABOVE_FOOTER_HTML:
+        (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.AD_ABOVE_FOOTER_HTML) ||
+        "",
+      AD_POPUP_HTML:
+        (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.AD_POPUP_HTML) ||
+        ""
+    });
+
+    const BLOGGER_FEED_URL = RUNTIME_ENV.BLOGGER_FEED_URL;
     const STORAGE_KEYS = {
       theme: "kertasbiru_theme_v1",
       bookmarks: "kertasbiru_bookmarks_v1",
@@ -307,6 +328,23 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
+    }
+
+    function applyConfiguredAdSlots() {
+      try {
+        if (RUNTIME_ENV.AD_ABOVE_FOOTER_HTML) {
+          const footerSlot = document.getElementById("aboveFooterAdSlot");
+          if (footerSlot) {
+            footerSlot.innerHTML = RUNTIME_ENV.AD_ABOVE_FOOTER_HTML;
+          }
+        }
+        if (RUNTIME_ENV.AD_POPUP_HTML) {
+          const popupBody = document.getElementById("popupAdBody");
+          if (popupBody) {
+            popupBody.innerHTML = RUNTIME_ENV.AD_POPUP_HTML;
+          }
+        }
+      } catch (_err) {}
     }
 
     function loadSavedState() {
@@ -392,7 +430,8 @@
           `;
           return;
         }
-        host.innerHTML = `<div class="max-h-[65vh] overflow-y-auto space-y-2 pr-1">` +
+        host.innerHTML =
+          `<div class="max-h-[65vh] overflow-y-auto space-y-2 pr-1">` +
           bookmarkedNovels
             .map(
               (n) => `
@@ -783,6 +822,14 @@
 
       const popularList = getPopularNovels(4);
       const latestList = getLatestNovels(4);
+      const belowHeroAdContent = RUNTIME_ENV.AD_HOME_BELOW_HERO_HTML
+        ? RUNTIME_ENV.AD_HOME_BELOW_HERO_HTML
+        : `
+          <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">IKLAN</div>
+          <div class="text-xs sm:text-sm text-[var(--pastel-muted)]">
+            Wadah Slot Iklan <code class="px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] text-[var(--pastel-text)] text-xs">home_below_hero</code>
+          </div>
+        `;
 
       return `
         ${renderHeroSlideshow()}
@@ -839,10 +886,7 @@
         </div>
 
         <div class="my-6 bg-[var(--pastel-card)] border border-dashed border-[var(--pastel-border)] rounded-2xl p-4 text-center">
-          <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">IKLAN</div>
-          <div class="text-xs sm:text-sm text-[var(--pastel-muted)]">
-            Wadah Slot Iklan <code class="px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] text-[var(--pastel-text)] text-xs">home_below_hero</code>
-          </div>
+          ${belowHeroAdContent}
         </div>
 
         <div>
@@ -1136,21 +1180,28 @@
           </div>
         </div>
 
+        <!-- Satu Kolom Daftar Bab Format Kartu Bisa Digulir -->
         <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 mb-5">
-          <h2 class="text-base font-extrabold mb-3">Daftar Bab (${chapters.length})</h2>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <h2 class="text-base font-extrabold">Daftar Bab (${chapters.length})</h2>
+            <span class="text-[11px] font-bold text-[var(--pastel-muted)]">Gulir &darr;</span>
+          </div>
           ${
             chapters.length
-              ? `<div class="max-h-80 overflow-y-auto pr-1 divide-y divide-[var(--pastel-border)]">
+              ? `<div class="max-h-80 overflow-y-auto pr-1 space-y-2">
                   ${chapters
                     .map(
                       (ch, idx) => `
                         <button
                           type="button"
                           onclick="openChapterReader('${escapeHtml(novel.id)}', '${escapeHtml(ch.id)}')"
-                          class="w-full py-3 text-left flex items-center justify-between gap-2 text-xs sm:text-sm font-semibold hover:text-[var(--pastel-accent)] cursor-pointer"
+                          class="w-full p-2.5 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] text-left flex items-center justify-between gap-2 cursor-pointer"
                         >
-                          <span class="truncate">${idx + 1}. ${escapeHtml(ch.title)}</span>
-                          <span class="text-xs text-[var(--pastel-accent)] shrink-0">Baca &rarr;</span>
+                          <div class="min-w-0">
+                            <div class="text-xs sm:text-sm font-bold truncate">${idx + 1}. ${escapeHtml(ch.title)}</div>
+                            <div class="text-[11px] text-[var(--pastel-muted)] truncate">${escapeHtml(novel.title)}</div>
+                          </div>
+                          <span class="text-xs font-bold text-[var(--pastel-accent)] shrink-0">Buka &rarr;</span>
                         </button>
                       `
                     )
@@ -1422,7 +1473,11 @@
     }
 
     function loadBloggerData() {
-      const baseUrl = BLOGGER_FEED_URL.replace(/\/+$/, "");
+      const baseUrl = String(BLOGGER_FEED_URL || "").replace(/\/+$/, "");
+      if (!baseUrl) {
+        renderView();
+        return;
+      }
       const jsonpUrl = `${baseUrl}/feeds/posts/default?alt=json-in-script&max-results=100&callback=handleBloggerJsonp`;
 
       try {
@@ -1490,6 +1545,7 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       loadSavedState();
+      applyConfiguredAdSlots();
       renderView();
       updateScrollToTopVisibility();
       startHeroAutoSlide();
