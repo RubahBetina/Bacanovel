@@ -1275,7 +1275,11 @@
               ${(novel.genres || [])
                 .map(
                   (g) =>
-                    `<span class="px-2.5 py-0.5 rounded-lg bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-[11px] font-bold">${escapeHtml(g)}</span>`
+                    `<button
+                      type="button"
+                      onclick="openGenreView('${escapeHtml(g)}')"
+                      class="px-2.5 py-0.5 rounded-lg bg-[var(--pastel-soft)] hover:border-[var(--pastel-accent)] border border-[var(--pastel-border)] text-[11px] font-bold cursor-pointer"
+                    >${escapeHtml(g)}</button>`
                 )
                 .join("")}
             </div>
@@ -1649,6 +1653,8 @@
             !low.includes("tamat") &&
             !low.includes("berlanjut") &&
             !low.includes("novel") &&
+            !low.startsWith("novel:") &&
+            !low.includes("series") &&
             !low.includes("bab") &&
             !low.includes("chapter") &&
             !low.startsWith("penulis:") &&
