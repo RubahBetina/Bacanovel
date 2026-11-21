@@ -387,27 +387,29 @@
           `;
           return;
         }
-        host.innerHTML = bookmarkedNovels
-          .map(
-            (n) => `
-              <button
-                type="button"
-                onclick="toggleMobileMenu(false); openNovelDetail('${escapeHtml(n.id)}');"
-                class="w-full text-left p-2.5 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] flex items-center gap-2.5 cursor-pointer"
-              >
-                ${
-                  n.cover
-                    ? `<img src="${escapeHtml(n.cover)}" alt="${escapeHtml(n.title)}" class="w-9 h-12 rounded-lg object-cover object-top shrink-0" />`
-                    : `<div class="w-9 h-12 rounded-lg bg-[var(--pastel-soft)] shrink-0"></div>`
-                }
-                <div class="min-w-0">
-                  <div class="text-xs font-bold truncate">${escapeHtml(n.title)}</div>
-                  <div class="text-[11px] text-[var(--pastel-muted)] truncate">${escapeHtml(n.author || "Anonim")}</div>
-                </div>
-              </button>
-            `
-          )
-          .join("");
+        host.innerHTML = `<div class="max-h-[65vh] overflow-y-auto space-y-2 pr-1">` +
+          bookmarkedNovels
+            .map(
+              (n) => `
+                <button
+                  type="button"
+                  onclick="toggleMobileMenu(false); openNovelDetail('${escapeHtml(n.id)}');"
+                  class="w-full text-left p-2.5 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] flex items-center gap-2.5 cursor-pointer"
+                >
+                  ${
+                    n.cover
+                      ? `<img src="${escapeHtml(n.cover)}" alt="${escapeHtml(n.title)}" class="w-9 h-12 rounded-lg object-cover object-top shrink-0" />`
+                      : `<div class="w-9 h-12 rounded-lg bg-[var(--pastel-soft)] shrink-0"></div>`
+                  }
+                  <div class="min-w-0">
+                    <div class="text-xs font-bold truncate">${escapeHtml(n.title)}</div>
+                    <div class="text-[11px] text-[var(--pastel-muted)] truncate">${escapeHtml(n.author || "Anonim")}</div>
+                  </div>
+                </button>
+              `
+            )
+            .join("") +
+          `</div>`;
         return;
       }
 
@@ -419,7 +421,7 @@
         : [];
 
       host.innerHTML = `
-        <div class="flex flex-wrap gap-1.5">
+        <div class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto pr-1">
           ${genres
             .map((g) => {
               const active = selectedSideGenre.toLowerCase() === g.toLowerCase();
@@ -445,19 +447,21 @@
                 <div class="text-[11px] font-bold text-[var(--pastel-muted)]">Genre: ${escapeHtml(selectedSideGenre)} (${matchingByGenre.length})</div>
                 ${
                   matchingByGenre.length
-                    ? matchingByGenre
-                        .map(
-                          (n) => `
-                            <button
-                              type="button"
-                              onclick="toggleMobileMenu(false); openNovelDetail('${escapeHtml(n.id)}');"
-                              class="w-full text-left p-2 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] text-xs font-bold truncate cursor-pointer block"
-                            >
-                              ${escapeHtml(n.title)}
-                            </button>
-                          `
-                        )
-                        .join("")
+                    ? `<div class="max-h-60 overflow-y-auto space-y-1.5 pr-1">` +
+                        matchingByGenre
+                          .map(
+                            (n) => `
+                              <button
+                                type="button"
+                                onclick="toggleMobileMenu(false); openNovelDetail('${escapeHtml(n.id)}');"
+                                class="w-full text-left p-2 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] text-xs font-bold truncate cursor-pointer block"
+                              >
+                                ${escapeHtml(n.title)}
+                              </button>
+                            `
+                          )
+                          .join("") +
+                      `</div>`
                     : `<div class="text-xs text-[var(--pastel-muted)]">Belum ada novel di genre ini.</div>`
                 }
                </div>`
@@ -793,7 +797,7 @@
                 </div>
                 ${
                   searchResults.length
-                    ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                    ? `<div class="max-h-[70vh] overflow-y-auto pr-1 grid grid-cols-2 md:grid-cols-4 gap-3.5">
                         ${searchResults.map(renderNovelCard).join("")}
                        </div>`
                     : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
@@ -887,7 +891,7 @@
       return `
         <div class="mb-4">
           <h1 class="text-xl sm:text-2xl font-extrabold">Daftar Novel (A&ndash;Z)</h1>
-          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Pilih huruf di atas untuk menyaring judul novel</p>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Pilih huruf di atas untuk menyaring judul novel (${list.length} judul)</p>
         </div>
 
         <!-- Baris Tombol Huruf A-Z Ala Keyboard -->
@@ -923,7 +927,7 @@
 
         ${
           list.length
-            ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+            ? `<div class="max-h-[72vh] overflow-y-auto pr-1 grid grid-cols-2 md:grid-cols-4 gap-3.5">
                 ${list.map(renderNovelCard).join("")}
                </div>`
             : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
@@ -944,7 +948,7 @@
       return `
         <div class="mb-4">
           <h1 class="text-xl sm:text-2xl font-extrabold">Genre Novel</h1>
-          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Saring novel berdasarkan genre pilihanmu</p>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Saring novel berdasarkan genre pilihanmu (${filtered.length} judul)</p>
         </div>
 
         <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-3.5 mb-5 flex flex-wrap gap-2">
@@ -981,7 +985,7 @@
 
         ${
           filtered.length
-            ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+            ? `<div class="max-h-[72vh] overflow-y-auto pr-1 grid grid-cols-2 md:grid-cols-4 gap-3.5">
                 ${filtered.map(renderNovelCard).join("")}
                </div>`
             : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
@@ -996,12 +1000,12 @@
       return `
         <div class="mb-4">
           <h1 class="text-xl sm:text-2xl font-extrabold">Bookmark Saya</h1>
-          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Novel yang kamu simpan di perangkat ini</p>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Novel yang kamu simpan di perangkat ini (${savedNovels.length} judul)</p>
         </div>
 
         ${
           savedNovels.length
-            ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+            ? `<div class="max-h-[72vh] overflow-y-auto pr-1 grid grid-cols-2 md:grid-cols-4 gap-3.5">
                 ${savedNovels.map(renderNovelCard).join("")}
                </div>`
             : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
@@ -1095,9 +1099,17 @@
             </div>
             <h1 class="text-xl sm:text-2xl font-extrabold mb-1">${escapeHtml(novel.title)}</h1>
             <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-3">Penulis: ${escapeHtml(novel.author || "Anonim")}</p>
-            <p class="text-xs sm:text-sm leading-relaxed text-[var(--pastel-muted)] mb-4">
-              ${escapeHtml(novel.synopsis || "Sinopsis belum tersedia.")}
-            </p>
+
+            <!-- Kolom Sinopsis di Halaman Detail Novel -->
+            <div class="p-3.5 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] mb-4">
+              <div class="text-[11px] font-extrabold uppercase tracking-wider text-[var(--pastel-accent)] mb-1">
+                Sinopsis
+              </div>
+              <p class="text-xs sm:text-sm leading-relaxed">
+                ${escapeHtml(novel.synopsis || "Sinopsis belum tersedia.")}
+              </p>
+            </div>
+
             <div class="flex flex-wrap gap-2">
               ${
                 chapters.length
@@ -1126,7 +1138,7 @@
           <h2 class="text-base font-extrabold mb-3">Daftar Bab (${chapters.length})</h2>
           ${
             chapters.length
-              ? `<div class="divide-y divide-[var(--pastel-border)]">
+              ? `<div class="max-h-80 overflow-y-auto pr-1 divide-y divide-[var(--pastel-border)]">
                   ${chapters
                     .map(
                       (ch, idx) => `
@@ -1373,7 +1385,7 @@
             status,
             genres: genres.length ? genres : ["Novel"],
             cover,
-            synopsis: plainText.slice(0, 180) || "Sinopsis belum tersedia.",
+            synopsis: plainText.slice(0, 260) || "Sinopsis belum tersedia.",
             views: list.length - index,
             publishedMs
           });
