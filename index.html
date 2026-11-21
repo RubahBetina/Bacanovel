@@ -191,11 +191,17 @@
     <div id="appViewport"></div>
 
     <!-- Slot Iklan di Antara Postingan dan Footer -->
-    <div id="aboveFooterAdSlot" class="mt-8 mb-2 bg-[var(--pastel-card)] border border-dashed border-[var(--pastel-border)] rounded-2xl p-4 text-center">
-      <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">IKLAN</div>
-      <div class="text-xs sm:text-sm text-[var(--pastel-muted)]">
-        Wadah Slot Iklan <code class="px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] text-[var(--pastel-text)] text-xs">above_footer</code>
-      </div>
+    <div id="aboveFooterAdSlot" class="mt-8 mb-2 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-4 text-center">
+      <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">SPONSOR</div>
+      <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-2.5">Temukan cerita &amp; hiburan pilihan untuk menemani waktu bacamu.</p>
+      <a
+        href="https://asiafilm.org/4/accd646de0eb0026d91d417f46c3584e"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white text-xs sm:text-sm font-bold"
+      >
+        Kunjungi Rekomendasi &rarr;
+      </a>
     </div>
   </main>
 
@@ -237,10 +243,19 @@
         </div>
         <h3 class="text-base font-extrabold mb-2">Dukung Terus KertasBiru</h3>
         <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-4">
-          Nikmati cerita berseri favoritmu setiap hari. Slot iklan pop-up ini otomatis dijeda selama 20 menit setelah muncul.
+          Nikmati cerita berseri favoritmu gratis setiap hari dengan dukungan sponsor pilihan kami.
         </p>
       </div>
-      <div class="flex justify-end gap-2">
+      <div class="flex flex-wrap justify-end gap-2">
+        <a
+          href="https://auctionr.org/4/2aa3e03af5818e581d3e493cde244ef9"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+          onclick="closePromoAdModal()"
+          class="px-4 py-2 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs sm:text-sm font-bold"
+        >
+          Lihat Sponsor
+        </a>
         <button
           type="button"
           onclick="closePromoAdModal()"
@@ -254,25 +269,61 @@
 
   <script>
     /**
-     * Konfigurasi terpusat untuk sumber Blogger & kode iklan.
+     * Konfigurasi terpusat untuk sumber Blogger, komentar publik, & direct link iklan.
      * Jika memakai bundler/CI (GitHub Actions / Vercel / Netlify), nilai ini bisa diinjeksi lewat environment variable.
      */
+    const DIRECT_AD_LINKS = Object.freeze([
+      "https://asiafilm.org/4/c2493a8091a220764d99578b5aa6d451",
+      "https://asiafilm.org/4/accd646de0eb0026d91d417f46c3584e",
+      "https://auctionr.org/4/2aa3e03af5818e581d3e493cde244ef9",
+      "https://asiafilm.org/4/519eeb59a1468285ae8891a92ac95945"
+    ]);
+
     const RUNTIME_ENV = Object.freeze({
       BLOGGER_FEED_URL:
         (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.BLOGGER_FEED_URL) ||
-        "https://novelkutest.blogspot.com",
+        "https://bacanovelkudongah.blogspot.com",
+      COMMENTS_ENDPOINT_URL:
+        (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.COMMENTS_ENDPOINT_URL) ||
+        "",
       AD_HOME_BELOW_HERO_HTML:
         (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.AD_HOME_BELOW_HERO_HTML) ||
-        "",
+        `
+          <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">SPONSOR</div>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-2.5">Rekomendasi hiburan &amp; konten pilihan pembaca hari ini.</p>
+          <a
+            href="${DIRECT_AD_LINKS[0]}"
+            target="_blank"
+            rel="nofollow noopener noreferrer"
+            class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white text-xs sm:text-sm font-bold"
+          >
+            Buka Rekomendasi &rarr;
+          </a>
+        `,
       AD_ABOVE_FOOTER_HTML:
         (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.AD_ABOVE_FOOTER_HTML) ||
-        "",
+        `
+          <div class="text-[11px] font-bold uppercase tracking-widest text-[var(--pastel-muted)] mb-1">SPONSOR</div>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-2.5">Temukan cerita &amp; hiburan pilihan untuk menemani waktu bacamu.</p>
+          <a
+            href="${DIRECT_AD_LINKS[1]}"
+            target="_blank"
+            rel="nofollow noopener noreferrer"
+            class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white text-xs sm:text-sm font-bold"
+          >
+            Kunjungi Rekomendasi &rarr;
+          </a>
+        `,
       AD_POPUP_HTML:
         (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.AD_POPUP_HTML) ||
-        ""
+        "",
+      AD_DETAIL_SPONSOR_URL:
+        (typeof window !== "undefined" && window.__ENV__ && window.__ENV__.AD_DETAIL_SPONSOR_URL) ||
+        DIRECT_AD_LINKS[3]
     });
 
     const BLOGGER_FEED_URL = RUNTIME_ENV.BLOGGER_FEED_URL;
+    const COMMENTS_ENDPOINT_URL = RUNTIME_ENV.COMMENTS_ENDPOINT_URL;
     const STORAGE_KEYS = {
       theme: "kertasbiru_theme_v1",
       bookmarks: "kertasbiru_bookmarks_v1",
@@ -300,6 +351,8 @@
     let allChapters = [];
     let bookmarks = [];
     let commentsMap = {};
+    let isSubmittingComment = false;
+    let commentStatusMessage = "";
     let currentView = "home";
     let activeNovelId = null;
     let activeChapterId = null;
@@ -569,7 +622,9 @@
       currentView = "detail";
       activeNovelId = novelId;
       activeChapterId = null;
+      commentStatusMessage = "";
       renderView();
+      fetchRemoteComments(novelId);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -885,7 +940,7 @@
           }
         </div>
 
-        <div class="my-6 bg-[var(--pastel-card)] border border-dashed border-[var(--pastel-border)] rounded-2xl p-4 text-center">
+        <div class="my-6 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-4 text-center">
           ${belowHeroAdContent}
         </div>
 
@@ -1063,8 +1118,59 @@
       `;
     }
 
-    function submitNovelComment(event, novelId) {
+    function saveLocalComments() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.comments, JSON.stringify(commentsMap));
+      } catch (_err) {}
+    }
+
+    function mergeCommentsList(novelId, incomingList) {
+      const existing = Array.isArray(commentsMap[novelId]) ? commentsMap[novelId] : [];
+      const seen = new Set();
+      const merged = [];
+
+      const pushUnique = (item) => {
+        if (!item || !item.text) return;
+        const key = `${String(item.id || "")}|${String(item.author || "")}|${String(item.text || "").trim()}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        merged.push({
+          id: String(item.id || ("cmt_" + Math.random().toString(36).slice(2, 8))),
+          author: String(item.author || "Pembaca").trim() || "Pembaca",
+          text: String(item.text || "").trim(),
+          createdAt: String(item.createdAt || "").trim()
+        });
+      };
+
+      (Array.isArray(incomingList) ? incomingList : []).forEach(pushUnique);
+      existing.forEach(pushUnique);
+
+      commentsMap[novelId] = merged;
+      saveLocalComments();
+    }
+
+    async function fetchRemoteComments(novelId) {
+      const endpoint = String(COMMENTS_ENDPOINT_URL || "").trim();
+      if (!endpoint || !novelId) return;
+
+      try {
+        const sep = endpoint.includes("?") ? "&" : "?";
+        const url = `${endpoint}${sep}novelId=${encodeURIComponent(novelId)}`;
+        const res = await fetch(url, { method: "GET", cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : Array.isArray(data && data.comments) ? data.comments : [];
+        mergeCommentsList(novelId, list);
+        if (currentView === "detail" && activeNovelId === novelId) {
+          renderView();
+        }
+      } catch (_err) {}
+    }
+
+    async function submitNovelComment(event, novelId) {
       event.preventDefault();
+      if (isSubmittingComment) return;
+
       const nameInput = document.getElementById("commentNameInput");
       const bodyInput = document.getElementById("commentBodyInput");
       if (!nameInput || !bodyInput) return;
@@ -1073,12 +1179,8 @@
       const text = String(bodyInput.value || "").trim();
       if (!text) return;
 
-      if (!Array.isArray(commentsMap[novelId])) {
-        commentsMap[novelId] = [];
-      }
-
-      commentsMap[novelId].unshift({
-        id: "cmt_" + Date.now(),
+      const newComment = {
+        id: "cmt_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
         author,
         text,
         createdAt: new Date().toLocaleDateString("id-ID", {
@@ -1086,13 +1188,45 @@
           month: "short",
           year: "numeric"
         })
-      });
+      };
+
+      if (!Array.isArray(commentsMap[novelId])) {
+        commentsMap[novelId] = [];
+      }
+      commentsMap[novelId].unshift(newComment);
+      saveLocalComments();
+
+      const endpoint = String(COMMENTS_ENDPOINT_URL || "").trim();
+      if (!endpoint) {
+        commentStatusMessage = "Komentar tersimpan di perangkat ini.";
+        renderView();
+        return;
+      }
+
+      isSubmittingComment = true;
+      commentStatusMessage = "Mengirim komentar...";
+      renderView();
 
       try {
-        localStorage.setItem(STORAGE_KEYS.comments, JSON.stringify(commentsMap));
-      } catch (_err) {}
-
-      renderView();
+        await fetch(endpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            novelId,
+            author: newComment.author,
+            text: newComment.text,
+            createdAt: newComment.createdAt
+          })
+        });
+        commentStatusMessage = "Komentar terkirim.";
+        setTimeout(() => fetchRemoteComments(novelId), 900);
+      } catch (_err) {
+        commentStatusMessage = "Komentar tersimpan lokal.";
+      } finally {
+        isSubmittingComment = false;
+        renderView();
+      }
     }
 
     function renderDetailView() {
@@ -1176,6 +1310,14 @@
               >
                 ${isBookmarked ? "&#9733; Tersimpan di Bookmark" : "&#9734; Simpan Bookmark"}
               </button>
+              <a
+                href="${escapeHtml(RUNTIME_ENV.AD_DETAIL_SPONSOR_URL)}"
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                class="px-4 py-2 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-xs sm:text-sm font-bold"
+              >
+                Sponsor
+              </a>
             </div>
           </div>
         </div>
@@ -1212,7 +1354,20 @@
         </div>
 
         <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5">
-          <h2 class="text-base font-extrabold mb-3">Komentar Pembaca (${comments.length})</h2>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <h2 class="text-base font-extrabold">Komentar Pembaca (${comments.length})</h2>
+            ${
+              COMMENTS_ENDPOINT_URL
+                ? `<button
+                    type="button"
+                    onclick="fetchRemoteComments('${escapeHtml(novel.id)}')"
+                    class="text-xs font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer"
+                   >
+                    Muat Ulang
+                   </button>`
+                : ""
+            }
+          </div>
           <form onsubmit="submitNovelComment(event, '${escapeHtml(novel.id)}')" class="space-y-3 mb-5">
             <input
               id="commentNameInput"
@@ -1227,12 +1382,20 @@
               placeholder="Tulis komentar tentang novel ini..."
               class="w-full px-3.5 py-2 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] text-xs sm:text-sm"
             ></textarea>
-            <button
-              type="submit"
-              class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer"
-            >
-              Kirim Komentar
-            </button>
+            <div class="flex items-center gap-3 flex-wrap">
+              <button
+                type="submit"
+                ${isSubmittingComment ? "disabled" : ""}
+                class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer disabled:opacity-60"
+              >
+                ${isSubmittingComment ? "Mengirim..." : "Kirim Komentar"}
+              </button>
+              ${
+                commentStatusMessage
+                  ? `<span class="text-xs font-semibold text-[var(--pastel-muted)]">${escapeHtml(commentStatusMessage)}</span>`
+                  : ""
+              }
+            </div>
           </form>
 
           ${
@@ -1363,14 +1526,102 @@
       return "";
     }
 
-    function stripHtmlToText(htmlString) {
+    function stripHtmlToLines(htmlString) {
       try {
         const div = document.createElement("div");
-        div.innerHTML = String(htmlString || "");
-        return (div.textContent || div.innerText || "").trim();
+        const blockSeparatedHtml = String(htmlString || "")
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(
+            /<\/(p|div|h[1-6]|li|tr|blockquote|section|article)\b[^>]*>/gi,
+            "</$1>\n"
+          );
+        div.innerHTML = blockSeparatedHtml;
+        return (div.textContent || div.innerText || "")
+          .replace(/\r/g, "")
+          .split("\n")
+          .map((line) => line.replace(/\s+/g, " ").trim())
+          .filter(Boolean);
       } catch (_err) {
-        return String(htmlString || "").replace(/<[^>]+>/g, " ").trim();
+        return String(htmlString || "")
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(/<[^>]+>/g, "\n")
+          .replace(/\r/g, "")
+          .split("\n")
+          .map((line) => line.replace(/\s+/g, " ").trim())
+          .filter(Boolean);
       }
+    }
+
+    function cleanExtractedAuthorName(rawName) {
+      return String(rawName || "")
+        .replace(/^[:\-\s]+|[:\-\s]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function extractAuthorAndSynopsis(rawHtml, plainText, labels, fallbackAuthor) {
+      const lines = stripHtmlToLines(rawHtml);
+      let author = "";
+      const remainingLines = [];
+
+      // 1. Cek setiap baris/paragraf: pola "Penulis : <nama>" atau "Author : <nama>"
+      for (const line of lines) {
+        const lineMatch = line.match(/^(?:penulis|author)\s*:\s*(.+)$/i);
+        if (lineMatch && lineMatch[1] && !author) {
+          // Jika dalam satu baris ada pemisah "Sinopsis:" setelah nama, pisahkan
+          const splitBySynopsis = lineMatch[1].split(/\s+sinopsis\s*:/i);
+          author = cleanExtractedAuthorName(splitBySynopsis[0]);
+          if (splitBySynopsis[1] && splitBySynopsis[1].trim()) {
+            remainingLines.push(splitBySynopsis[1].trim());
+          }
+        } else {
+          remainingLines.push(line);
+        }
+      }
+
+      // 2. Jika tidak berada di baris terpisah, cari pola "Penulis : <nama>" secara dinamis
+      const combinedText =
+        remainingLines.join(" ").replace(/\s+/g, " ").trim() ||
+        String(plainText || "").replace(/\s+/g, " ").trim();
+
+      let synopsisText = combinedText;
+
+      if (!author) {
+        // Ambil nama setelah "Penulis :" sampai tanda baca/batas kalimat atau kata penghubung umum
+        const dynamicMatch = combinedText.match(
+          /(?:^|\s)(?:penulis|author)\s*:\s*([A-Za-zÀ-ÖØ-öø-ÿ0-9._'-]+(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ0-9._'-]+){0,4})(?=\s+(?:apa|siapa|bagaimana|mengapa|kapan|dimana|di|ke|dari|yang|ketika|saat|dan|atau|namun|tetapi|sinopsis|genre|status|bab|chapter)\b|[.!?]|$)/i
+        );
+        if (dynamicMatch && dynamicMatch[1]) {
+          author = cleanExtractedAuthorName(dynamicMatch[1]);
+          synopsisText = combinedText.replace(dynamicMatch[0], " ").trim();
+        }
+      }
+
+      // 3. Fallback label Blogger berawalan "penulis:" atau "author:"
+      if (!author) {
+        const authorLabel = (labels || []).find((l) => {
+          const low = String(l || "").toLowerCase();
+          return low.startsWith("penulis:") || low.startsWith("author:");
+        });
+        if (authorLabel) {
+          author = cleanExtractedAuthorName(authorLabel.replace(/^(penulis:|author:)/i, ""));
+        }
+      }
+
+      // 4. Fallback terakhir ke nama penulis feed Blogger
+      if (!author) {
+        author = cleanExtractedAuthorName(fallbackAuthor) || "Anonim";
+      }
+
+      synopsisText = synopsisText
+        .replace(/^(?:penulis|author)\s*:\s*[^\n]+(?:\s+|$)/i, "")
+        .replace(/^sinopsis\s*:\s*/i, "")
+        .trim();
+
+      return {
+        author,
+        synopsis: synopsisText.slice(0, 260) || "Sinopsis belum tersedia."
+      };
     }
 
     function parseBloggerEntries(entries) {
@@ -1405,16 +1656,10 @@
           );
         });
 
-        const authorLabel = labels.find((l) => {
-          const low = l.toLowerCase();
-          return low.startsWith("penulis:") || low.startsWith("author:");
-        });
-        const author = authorLabel
-          ? authorLabel.replace(/^(penulis:|author:)/i, "").trim()
-          : (entry.author && entry.author[0] && entry.author[0].name && entry.author[0].name.$t) || "Anonim";
-
+        const feedAuthor =
+          (entry.author && entry.author[0] && entry.author[0].name && entry.author[0].name.$t) || "Anonim";
         const cover = extractFirstImageFromHtml(rawHtml);
-        const plainText = stripHtmlToText(rawHtml);
+        const plainText = stripHtmlToLines(rawHtml).join(" ");
         const id = (entry.id && entry.id.$t) || `post_${index}`;
 
         if (isChapter) {
@@ -1430,6 +1675,7 @@
             textContent: plainText
           });
         } else {
+          const { author, synopsis } = extractAuthorAndSynopsis(rawHtml, plainText, labels, feedAuthor);
           parsedNovels.push({
             id,
             title: rawTitle,
@@ -1437,7 +1683,7 @@
             status,
             genres: genres.length ? genres : ["Novel"],
             cover,
-            synopsis: plainText.slice(0, 260) || "Sinopsis belum tersedia.",
+            synopsis,
             views: list.length - index,
             publishedMs
           });
