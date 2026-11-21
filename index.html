@@ -1,0 +1,1785 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KertasBiru &mdash; Platform Baca Novel</title>
+  <link id="siteFavicon" rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --pastel-bg: #f3f8fe;
+      --pastel-card: #ffffff;
+      --pastel-soft: #e3effd;
+      --pastel-border: #c5daf5;
+      --pastel-text: #162b4d;
+      --pastel-muted: #526d96;
+      --pastel-accent: #2563eb;
+      --pastel-accent-hover: #1d4ed8;
+    }
+
+    html.dark {
+      --pastel-bg: #0b1324;
+      --pastel-card: #121e36;
+      --pastel-soft: #1a2b4c;
+      --pastel-border: #243b66;
+      --pastel-text: #eef4ff;
+      --pastel-muted: #93aed6;
+      --pastel-accent: #3b82f6;
+      --pastel-accent-hover: #60a5fa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--pastel-bg);
+      color: var(--pastel-text);
+      line-height: 1.7;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .font-reading {
+      font-family: 'Lora', Georgia, Cambria, serif;
+    }
+
+    .frosted-glass-panel {
+      background-color: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+    }
+
+    html.dark .frosted-glass-panel {
+      background-color: rgba(18, 30, 54, 0.76);
+    }
+
+    @keyframes slideFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateX(16px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .hero-slide-enter {
+      animation: slideFadeIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .ad-slot-wrapper {
+      width: 100%;
+      margin: 18px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      clear: both;
+    }
+
+    .ad-slot-wrapper.is-hidden {
+      display: none !important;
+    }
+
+    .ad-slot-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pastel-muted);
+      margin-bottom: 6px;
+    }
+
+    .ad-slot-box {
+      width: 100%;
+      min-height: 84px;
+      background-color: var(--pastel-card);
+      border: 1.5px dashed var(--pastel-border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--pastel-muted);
+      font-size: 12px;
+      overflow: hidden;
+    }
+
+    .ad-slot-box code {
+      background-color: var(--pastel-soft);
+      color: var(--pastel-text);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    .pastel-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(11, 19, 36, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .pastel-modal-backdrop.is-open {
+      display: flex;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- HEADER UTAMA -->
+  <header class="sticky top-0 z-30 bg-[var(--pastel-card)]/95 backdrop-blur border-b border-[var(--pastel-border)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
+      <a href="#home" onclick="return goHomePage(event)" class="flex items-center gap-2 text-base sm:text-xl font-extrabold tracking-tight text-[var(--pastel-text)] shrink-0">
+        <span class="w-8 h-8 rounded-xl bg-[var(--pastel-soft)] border border-[var(--pastel-border)] flex items-center justify-center text-[var(--pastel-accent)] font-black">
+          K
+        </span>
+        <span>Kertas<span class="text-[var(--pastel-accent)]">Biru</span></span>
+      </a>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          id="slideDrawerToggleBtn"
+          aria-label="Buka atau Tutup Panel Samping"
+          onclick="toggleSlideDrawer()"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[var(--pastel-soft)] hover:opacity-90 text-[var(--pastel-text)] border border-[var(--pastel-border)] transition inline-flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>&#9776;</span>
+          <span class="hidden sm:inline">Panel</span>
+        </button>
+
+        <button
+          type="button"
+          id="themeToggleBtn"
+          aria-label="Ganti Mode Gelap atau Terang"
+          onclick="toggleThemeMode()"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[var(--pastel-soft)] hover:opacity-90 text-[var(--pastel-text)] border border-[var(--pastel-border)] transition inline-flex items-center gap-1.5 cursor-pointer"
+        >
+          <span id="themeToggleIcon">&#9789;</span>
+          <span id="themeToggleLabel" class="hidden sm:inline">Mode Gelap</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MENU BAR ATAS -->
+  <nav aria-label="Menu Bar Atas" class="relative z-20 bg-[var(--pastel-card)] border-b border-[var(--pastel-border)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center gap-2 overflow-x-auto">
+      <button
+        type="button"
+        id="topbar-home"
+        onclick="goHomePage()"
+        class="topbar-link px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition cursor-pointer"
+      >
+        Home
+      </button>
+      <button
+        type="button"
+        id="topbar-catalog"
+        onclick="openCatalogPage()"
+        class="topbar-link px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition cursor-pointer"
+      >
+        Daftar Novel
+      </button>
+      <button
+        type="button"
+        id="topbar-genre"
+        onclick="toggleHomeGenrePicker()"
+        class="topbar-link px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition cursor-pointer"
+      >
+        Genre
+      </button>
+      <button
+        type="button"
+        id="topbar-bookmarks"
+        onclick="openBookmarksPage()"
+        class="topbar-link px-4 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap transition inline-flex items-center gap-1.5 cursor-pointer"
+      >
+        <span>Bookmark</span>
+        <span id="topbarBookmarkBadge" class="text-[11px] px-1.5 py-0.5 rounded-full bg-[var(--pastel-soft)] text-[var(--pastel-accent)] font-bold">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- BACKDROP & PANEL SAMPING SETENGAH LAYAR -->
+  <div id="sideHalfBackdrop" onclick="toggleSlideDrawer(false)" class="hidden fixed inset-0 bg-slate-950/50 z-40"></div>
+  <aside
+    id="sideHalfDrawer"
+    aria-label="Panel Samping Setengah Layar"
+    style="transform: translateX(100%);"
+    class="fixed top-0 right-0 h-full w-1/2 min-w-[260px] max-w-[460px] bg-[var(--pastel-card)] border-l border-[var(--pastel-border)] shadow-2xl z-50 transition-transform duration-300 ease-out flex flex-col justify-between p-5 overflow-y-auto"
+  >
+    <div class="space-y-5">
+      <div class="flex items-center justify-between border-b border-[var(--pastel-border)] pb-3">
+        <div>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-[var(--pastel-accent)]">Panel Samping</p>
+          <h2 class="text-base font-extrabold text-[var(--pastel-text)]">Cari &amp; Genre</h2>
+        </div>
+        <button
+          type="button"
+          aria-label="Tutup Panel Samping"
+          onclick="toggleSlideDrawer(false)"
+          class="w-8 h-8 rounded-lg bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-sm font-bold flex items-center justify-center hover:border-[var(--pastel-accent)] cursor-pointer"
+        >
+          &#10005;
+        </button>
+      </div>
+
+      <div>
+        <label for="drawerSearchInput" class="block text-xs font-bold text-[var(--pastel-text)] mb-2">Cari Judul Novel</label>
+        <input
+          type="search"
+          id="drawerSearchInput"
+          oninput="handleSearchInput(this.value)"
+          placeholder="Ketik judul novel..."
+          class="w-full px-3.5 py-2 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] text-sm text-[var(--pastel-text)] focus:outline-none focus:border-[var(--pastel-accent)]"
+        />
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-xs font-bold text-[var(--pastel-text)]">Semua Genre</h3>
+          <button
+            type="button"
+            onclick="selectGenreFilter('')"
+            class="text-xs font-semibold text-[var(--pastel-accent)] hover:underline cursor-pointer"
+          >
+            Semua
+          </button>
+        </div>
+        <div id="drawerGenreList" class="flex flex-wrap gap-2"></div>
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-[var(--pastel-border)] text-xs text-[var(--pastel-muted)]">
+      Klik genre untuk menyaring novel langsung di Home.
+    </div>
+  </aside>
+
+  <!-- KONTENER UTAMA -->
+  <div id="mainLayoutGrid" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-6">
+    <!-- KONTEN UTAMA DI ATAS PADA HP -->
+    <main id="appViewport" class="min-w-0 order-1 lg:order-none"></main>
+
+    <!-- SIDEBAR DI BAWAH KONTEN PADA HP, DI KANAN PADA DESKTOP -->
+    <aside id="rightSidebar" class="space-y-5 order-2 lg:order-none">
+      <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 shadow-sm space-y-5">
+        <div>
+          <h2 class="text-sm font-bold text-[var(--pastel-text)] mb-2">Cari Judul Novel</h2>
+          <input
+            type="search"
+            id="sidebarSearchInput"
+            oninput="handleSearchInput(this.value)"
+            placeholder="Ketik judul novel..."
+            class="w-full px-3.5 py-2 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] text-sm text-[var(--pastel-text)] focus:outline-none focus:border-[var(--pastel-accent)]"
+          />
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-sm font-bold text-[var(--pastel-text)]">Cari Genre</h2>
+            <button
+              type="button"
+              onclick="selectGenreFilter('')"
+              class="text-xs font-semibold text-[var(--pastel-accent)] hover:underline cursor-pointer"
+            >
+              Reset
+            </button>
+          </div>
+          <div id="sidebarGenreList" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+
+      <div id="sidebarAdTopHost"></div>
+      <div id="sidebarAdMiddleHost"></div>
+      <div id="sidebarAdBottomHost"></div>
+    </aside>
+  </div>
+
+  <!-- MODAL POP-UP -->
+  <div id="popupModalBackdrop" class="pastel-modal-backdrop" role="dialog" aria-modal="true">
+    <div class="relative w-full max-w-md bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 shadow-xl">
+      <button
+        type="button"
+        id="popupModalCloseBtn"
+        aria-label="Tutup Pop-up"
+        class="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-[var(--pastel-text)] font-bold flex items-center justify-center hover:bg-[var(--pastel-accent)] hover:text-white transition cursor-pointer"
+      >
+        &#10005;
+      </button>
+      <div id="popupModalBody"></div>
+    </div>
+  </div>
+
+  <!-- MODAL PREFERENSI -->
+  <div id="prefModalBackdrop" class="pastel-modal-backdrop" role="dialog" aria-modal="true">
+    <div class="relative w-full max-w-md bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 shadow-xl">
+      <button
+        type="button"
+        id="prefModalCloseBtn"
+        aria-label="Tutup Pengaturan"
+        class="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-[var(--pastel-soft)] border border-[var(--pastel-border)] text-[var(--pastel-text)] font-bold flex items-center justify-center hover:bg-[var(--pastel-accent)] hover:text-white transition cursor-pointer"
+      >
+        &#10005;
+      </button>
+
+      <h2 class="text-lg font-bold text-[var(--pastel-text)] mb-1">Preferensi Tampilan &amp; Iklan</h2>
+      <p class="text-xs text-[var(--pastel-muted)] mb-4">Atur kenyamanan tampilan pop-up dan sidebar.</p>
+
+      <div class="space-y-3 text-sm border-y border-[var(--pastel-border)] py-4">
+        <label class="flex items-center justify-between cursor-pointer">
+          <span>Tampilkan Pop-up</span>
+          <input type="checkbox" id="prefPopupCheck" class="w-4 h-4 accent-[#2563eb]" />
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span>Tampilkan Promotional Popup</span>
+          <input type="checkbox" id="prefPromoCheck" class="w-4 h-4 accent-[#2563eb]" />
+        </label>
+        <label class="flex items-center justify-between cursor-pointer">
+          <span>Tampilkan Sidebar</span>
+          <input type="checkbox" id="prefSidebarCheck" class="w-4 h-4 accent-[#2563eb]" />
+        </label>
+      </div>
+
+      <div class="mt-5 flex justify-end">
+        <button
+          type="button"
+          id="savePrefBtn"
+          class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white text-sm font-semibold transition cursor-pointer"
+        >
+          Simpan Pengaturan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-[var(--pastel-card)] border-t border-[var(--pastel-border)] py-6 px-4 text-center text-xs sm:text-sm text-[var(--pastel-muted)] mt-10">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>&copy; <span id="footerYear"></span> KertasBiru &mdash; Platform Baca Novel.</div>
+      <nav aria-label="Navigasi Footer" class="flex items-center gap-4 font-semibold">
+        <button type="button" onclick="goHomePage()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Home</button>
+        <button type="button" onclick="openCatalogPage()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Daftar Novel</button>
+        <button type="button" onclick="openBookmarksPage()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Bookmark</button>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    const SITE_CONFIG = {
+      bloggerUrl: "https://novelkutest.blogspot.com"
+    };
+
+    const ALL_GENRES = [
+      "Romance",
+      "Fantasi",
+      "Action",
+      "Drama",
+      "Misteri",
+      "Horor",
+      "Komedi",
+      "Sci-Fi",
+      "Slice of Life",
+      "Petualangan",
+      "Sejarah",
+      "Thriller"
+    ];
+
+    const MONETIZATION_CONFIG = {
+      groups: {
+        home: true,
+        catalog: true,
+        detail: true,
+        reader: true,
+        sidebar: true
+      },
+      slots: {
+        home_below_hero: { enabled: true, code: "" },
+        home_between_popular_latest: { enabled: true, code: "" },
+        home_before_footer: { enabled: true, code: "" },
+        catalog_top: { enabled: true, code: "" },
+        catalog_after_rows: { enabled: true, code: "" },
+        detail_below_synopsis: { enabled: true, code: "" },
+        detail_above_chapter_list: { enabled: true, code: "" },
+        detail_below_chapter_list: { enabled: true, code: "" },
+        reader_above_title: { enabled: true, code: "" },
+        reader_below_content: { enabled: true, code: "" },
+        sidebar_top: { enabled: true, code: "" },
+        sidebar_middle: { enabled: true, code: "" },
+        sidebar_bottom: { enabled: true, code: "" }
+      },
+      popups: {
+        welcome: {
+          enabled: true,
+          delayMs: 3500,
+          badge: "Selamat Datang",
+          title: "Selamat Datang di KertasBiru",
+          description: "Baca novel favoritmu dengan tampilan poster yang rapi, mode gelap/terang, dan bookmark.",
+          ctaText: "Mulai Membaca"
+        },
+        promotional: {
+          enabled: true,
+          delayMs: 14000,
+          badge: "Pembaruan Bab",
+          title: "Cek Judul Populer & Terbaru",
+          description: "Temukan novel berstatus Tamat maupun Berlanjut dan simpan favoritmu ke Bookmark.",
+          ctaText: "Lihat Daftar Novel"
+        }
+      }
+    };
+
+    const APP_STATE = {
+      view: "home", // "home" | "section_popular" | "section_latest" | "catalog" | "bookmarks" | "detail" | "reader"
+      selectedNovelSlug: "",
+      selectedChapterSlug: "",
+      selectedGenre: "",
+      selectedLetter: "",
+      genrePickerOpen: false,
+      searchQuery: "",
+      heroSlideIndex: 0,
+      seriesList: [],
+      chapterList: [],
+      musicTracks: [],
+      genres: ALL_GENRES.slice()
+    };
+
+    const PREF_KEY = "kertasbiru_prefs_v2";
+    const BOOKMARK_KEY = "kertasbiru_bookmarks_v2";
+
+    let userPrefs = {
+      darkMode: false,
+      popupEnabled: true,
+      promoEnabled: true,
+      sidebarEnabled: true
+    };
+
+    let bookmarkedSlugs = [];
+    let isSlideDrawerOpen = false;
+    let activePopupType = null;
+    let heroTimer = null;
+    let audioPlayer = null;
+    let currentTrackIdx = 0;
+    let isAudioPlaying = false;
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function slugify(text) {
+      return String(text || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "novel";
+    }
+
+    function showToast(msg) {
+      const old = document.getElementById("kertasbiruToast");
+      if (old) old.remove();
+      const toast = document.createElement("div");
+      toast.id = "kertasbiruToast";
+      toast.className = "fixed bottom-4 left-1/2 -translate-x-1/2 z-[10000] px-4 py-2.5 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] text-xs font-semibold text-[var(--pastel-text)] shadow-lg max-w-[92vw]";
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        if (toast.parentNode) toast.remove();
+      }, 3000);
+    }
+
+    function loadPrefs() {
+      try {
+        const raw = localStorage.getItem(PREF_KEY);
+        if (raw) userPrefs = Object.assign({}, userPrefs, JSON.parse(raw));
+      } catch (e) {}
+    }
+
+    function savePrefs() {
+      try {
+        localStorage.setItem(PREF_KEY, JSON.stringify(userPrefs));
+      } catch (e) {}
+    }
+
+    function applyTheme() {
+      document.documentElement.classList.toggle("dark", Boolean(userPrefs.darkMode));
+      const icon = document.getElementById("themeToggleIcon");
+      const label = document.getElementById("themeToggleLabel");
+      if (icon) icon.innerHTML = userPrefs.darkMode ? "&#9728;" : "&#9789;";
+      if (label) label.textContent = userPrefs.darkMode ? "Mode Terang" : "Mode Gelap";
+    }
+
+    function toggleThemeMode() {
+      userPrefs.darkMode = !userPrefs.darkMode;
+      savePrefs();
+      applyTheme();
+    }
+
+    function applySidebar() {
+      const sidebar = document.getElementById("rightSidebar");
+      const grid = document.getElementById("mainLayoutGrid");
+      if (!sidebar || !grid) return;
+      if (userPrefs.sidebarEnabled) {
+        sidebar.classList.remove("hidden");
+        grid.className = "flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_300px] gap-6";
+      } else {
+        sidebar.classList.add("hidden");
+        grid.className = "flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 gap-6";
+      }
+    }
+
+    function loadBookmarks() {
+      try {
+        const raw = localStorage.getItem(BOOKMARK_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        bookmarkedSlugs = Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        bookmarkedSlugs = [];
+      }
+      refreshBookmarkBadge();
+    }
+
+    function saveBookmarks() {
+      try {
+        localStorage.setItem(BOOKMARK_KEY, JSON.stringify(bookmarkedSlugs));
+      } catch (e) {}
+      refreshBookmarkBadge();
+    }
+
+    function refreshBookmarkBadge() {
+      const badge = document.getElementById("topbarBookmarkBadge");
+      if (badge) badge.textContent = String(bookmarkedSlugs.length);
+    }
+
+    function toggleBookmark(slug) {
+      if (!slug) return;
+      const idx = bookmarkedSlugs.indexOf(slug);
+      if (idx === -1) {
+        bookmarkedSlugs.push(slug);
+        showToast("Novel disimpan ke Bookmark.");
+      } else {
+        bookmarkedSlugs.splice(idx, 1);
+        showToast("Novel dihapus dari Bookmark.");
+      }
+      saveBookmarks();
+      renderView();
+    }
+
+    function toggleSlideDrawer(forceState) {
+      const drawer = document.getElementById("sideHalfDrawer");
+      const backdrop = document.getElementById("sideHalfBackdrop");
+      if (!drawer || !backdrop) return;
+      isSlideDrawerOpen = typeof forceState === "boolean" ? forceState : !isSlideDrawerOpen;
+      drawer.style.transform = isSlideDrawerOpen ? "translateX(0)" : "translateX(100%)";
+      backdrop.classList.toggle("hidden", !isSlideDrawerOpen);
+    }
+
+    function setActiveNav(key) {
+      document.querySelectorAll(".topbar-link").forEach((btn) => {
+        btn.classList.remove("bg-[var(--pastel-accent)]", "text-white");
+        btn.classList.add("text-[var(--pastel-text)]");
+      });
+      const el = document.getElementById("topbar-" + key);
+      if (el) {
+        el.classList.remove("text-[var(--pastel-text)]");
+        el.classList.add("bg-[var(--pastel-accent)]", "text-white");
+      }
+    }
+
+    function goHomePage(event) {
+      if (event) event.preventDefault();
+      APP_STATE.view = "home";
+      APP_STATE.selectedGenre = "";
+      APP_STATE.genrePickerOpen = false;
+      APP_STATE.searchQuery = "";
+      const s1 = document.getElementById("sidebarSearchInput");
+      const s2 = document.getElementById("drawerSearchInput");
+      if (s1) s1.value = "";
+      if (s2) s2.value = "";
+      renderGenrePills();
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return false;
+    }
+
+    function openSectionPage(sectionKey) {
+      APP_STATE.view = sectionKey === "popular" ? "section_popular" : "section_latest";
+      APP_STATE.selectedGenre = "";
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openCatalogPage() {
+      APP_STATE.view = "catalog";
+      APP_STATE.selectedLetter = "";
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function selectLetterFilter(letter) {
+      APP_STATE.view = "catalog";
+      APP_STATE.selectedLetter = APP_STATE.selectedLetter === letter ? "" : (letter || "");
+      renderView();
+    }
+
+    function selectGenreFilter(genre) {
+      APP_STATE.view = "home";
+      APP_STATE.selectedGenre = genre || "";
+      APP_STATE.genrePickerOpen = false;
+      toggleSlideDrawer(false);
+      renderGenrePills();
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toggleHomeGenrePicker() {
+      APP_STATE.view = "home";
+      APP_STATE.genrePickerOpen = !APP_STATE.genrePickerOpen;
+      renderGenrePills();
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openBookmarksPage() {
+      APP_STATE.view = "bookmarks";
+      APP_STATE.genrePickerOpen = false;
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function handleSearchInput(val) {
+      APP_STATE.searchQuery = val || "";
+      const s1 = document.getElementById("sidebarSearchInput");
+      const s2 = document.getElementById("drawerSearchInput");
+      if (s1 && s1.value !== APP_STATE.searchQuery) s1.value = APP_STATE.searchQuery;
+      if (s2 && s2.value !== APP_STATE.searchQuery) s2.value = APP_STATE.searchQuery;
+      if (APP_STATE.searchQuery.trim() && APP_STATE.view !== "catalog") {
+        APP_STATE.view = "catalog";
+      }
+      renderView();
+    }
+
+    function openNovelDetail(slug) {
+      APP_STATE.view = "detail";
+      APP_STATE.selectedNovelSlug = slug;
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openChapterReader(novelSlug, chapterSlug) {
+      APP_STATE.view = "reader";
+      APP_STATE.selectedNovelSlug = novelSlug;
+      APP_STATE.selectedChapterSlug = chapterSlug || "";
+      renderView();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderGenrePills() {
+      const list = Array.from(new Set([...ALL_GENRES, ...(APP_STATE.genres || [])]));
+      const active = (APP_STATE.selectedGenre || "").toLowerCase();
+      const buildHtml = () => list.map((g) => {
+        const isActive = active && active === g.toLowerCase();
+        return `
+          <button
+            type="button"
+            onclick="selectGenreFilter('${escapeHtml(g)}')"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${
+              isActive
+                ? "bg-[var(--pastel-accent)] text-white border-[var(--pastel-accent)]"
+                : "bg-[var(--pastel-soft)] text-[var(--pastel-text)] border-[var(--pastel-border)] hover:border-[var(--pastel-accent)]"
+            }"
+          >
+            ${escapeHtml(g)}
+          </button>
+        `;
+      }).join("");
+
+      const sideHost = document.getElementById("sidebarGenreList");
+      const drawHost = document.getElementById("drawerGenreList");
+      if (sideHost) sideHost.innerHTML = buildHtml();
+      if (drawHost) drawHost.innerHTML = buildHtml();
+    }
+
+    function renderAdSlot(slotKey, groupKey) {
+      if (MONETIZATION_CONFIG.groups[groupKey] === false) return "";
+      const cfg = MONETIZATION_CONFIG.slots[slotKey];
+      if (!cfg || cfg.enabled === false) return "";
+      const hasCustom = cfg.code && String(cfg.code).trim().length > 0;
+      return `
+        <div class="ad-slot-wrapper">
+          <span class="ad-slot-label">Iklan</span>
+          <div class="ad-slot-box">
+            ${hasCustom ? cfg.code : `<div>Wadah Slot Iklan <code>${escapeHtml(slotKey)}</code></div>`}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSidebarAds() {
+      const t = document.getElementById("sidebarAdTopHost");
+      const m = document.getElementById("sidebarAdMiddleHost");
+      const b = document.getElementById("sidebarAdBottomHost");
+      if (t) t.innerHTML = renderAdSlot("sidebar_top", "sidebar");
+      if (m) m.innerHTML = renderAdSlot("sidebar_middle", "sidebar");
+      if (b) b.innerHTML = renderAdSlot("sidebar_bottom", "sidebar");
+    }
+
+    function extractFirstImage(html) {
+      const box = document.createElement("div");
+      box.innerHTML = html || "";
+      const img = box.querySelector("img");
+      return img ? (img.getAttribute("src") || "") : "";
+    }
+
+    function extractAudioList(html) {
+      const found = [];
+      const box = document.createElement("div");
+      box.innerHTML = html || "";
+      box.querySelectorAll("audio, audio source, a[href]").forEach((el) => {
+        const src = (el.getAttribute("src") || el.getAttribute("href") || "").trim();
+        if (/\.(mp3|ogg|wav|m4a|aac)(\?|#|$)/i.test(src)) {
+          found.push(src);
+        }
+      });
+      const text = box.textContent || "";
+      const matches = text.match(/https?:\/\/[^\s"'<>]+\.(?:mp3|ogg|wav|m4a|aac)(?:\?[^\s"'<>]*)?/gi) || [];
+      matches.forEach((u) => found.push(u.trim()));
+      return Array.from(new Set(found));
+    }
+
+    function htmlToPlainText(html) {
+      const box = document.createElement("div");
+      box.innerHTML = html || "";
+      return (box.textContent || box.innerText || "").replace(/\r\n/g, "\n").trim();
+    }
+
+    function parseAuthorAndSynopsis(plainText, feedAuthorName) {
+      const lines = String(plainText || "")
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean);
+
+      let authorLine = "";
+      const bodyLines = [];
+
+      lines.forEach((line) => {
+        const match = line.match(/^(?:penulis|author|karya|oleh)\s*[:\-]\s*(.+)$/i);
+        if (match && !authorLine) {
+          authorLine = `Penulis: ${match[1].trim()}`;
+        } else {
+          bodyLines.push(line);
+        }
+      });
+
+      const cleanFeedAuthor = String(feedAuthorName || "").trim();
+      const isPlaceholderAuthor = !cleanFeedAuthor || /^novellink$/i.test(cleanFeedAuthor);
+
+      return {
+        authorLine: authorLine || (isPlaceholderAuthor ? "" : `Penulis: ${cleanFeedAuthor}`),
+        synopsis: bodyLines.join("\n").trim() || "Sinopsis belum tersedia."
+      };
+    }
+
+    function parseBloggerFeed(entries) {
+      const seriesMap = new Map();
+      const fallbackSeries = [];
+      const chapters = [];
+      const tracks = [];
+      const genreSet = new Set(ALL_GENRES);
+
+      (entries || []).forEach((entry, idx) => {
+        const title = (entry.title && entry.title.$t ? entry.title.$t : `Postingan ${idx + 1}`).trim();
+        const htmlContent = (entry.content && entry.content.$t) || (entry.summary && entry.summary.$t) || "";
+        const plainText = htmlToPlainText(htmlContent);
+        const labels = (entry.category || []).map((c) => String(c.term || "").trim()).filter(Boolean);
+        const lowerLabels = labels.map((l) => l.toLowerCase());
+
+        const isMusic = lowerLabels.includes("musik") || lowerLabels.includes("music") || lowerLabels.includes("audio");
+        if (isMusic) {
+          const urls = extractAudioList(htmlContent);
+          urls.forEach((u, i) => {
+            tracks.push({
+              title: urls.length > 1 ? `${title} (${i + 1})` : title,
+              url: u
+            });
+          });
+          return;
+        }
+
+        const cover =
+          (entry.media$thumbnail && entry.media$thumbnail.url ? entry.media$thumbnail.url.replace(/\/s\d+(-c)?\//, "/s800/") : "") ||
+          extractFirstImage(htmlContent) ||
+          `https://placehold.co/600x900/dcebfa/162b4d?text=${encodeURIComponent(title.slice(0, 16))}`;
+
+        const metaLabels = new Set(["series", "novel", "chapter", "bab", "tamat", "berlanjut", "ongoing", "completed", "populer", "popular"]);
+        const genres = labels.filter((l) => !metaLabels.has(l.toLowerCase()));
+        genres.forEach((g) => genreSet.add(g));
+
+        const isCompleted = lowerLabels.includes("tamat") || lowerLabels.includes("completed");
+        const isPopular = lowerLabels.includes("populer") || lowerLabels.includes("popular") || idx < 4;
+        const isSeries = lowerLabels.includes("series") || lowerLabels.includes("novel");
+        const isChapter = lowerLabels.includes("chapter") || lowerLabels.includes("bab");
+
+        const feedAuthor = entry.author && entry.author[0] && entry.author[0].name ? entry.author[0].name.$t : "";
+        const parsedMeta = parseAuthorAndSynopsis(plainText, feedAuthor);
+        const slug = slugify(title);
+
+        const novelItem = {
+          slug,
+          title,
+          cover,
+          genres: genres.length ? genres : ["Drama"],
+          status: isCompleted ? "Tamat" : "Berlanjut",
+          authorLine: parsedMeta.authorLine,
+          synopsis: parsedMeta.synopsis,
+          popular: isPopular
+        };
+
+        if (isSeries) {
+          seriesMap.set(slug, novelItem);
+        } else if (isChapter) {
+          const babMatch = title.match(/bab\s*(\d+)/i);
+          const chNum = babMatch ? parseInt(babMatch[1], 10) : chapters.length + 1;
+          const parentTitle = title.replace(/[-–—:]?\s*bab\s*\d+.*/i, "").trim() || title;
+          chapters.push({
+            slug: slugify(title),
+            seriesSlug: slugify(parentTitle),
+            chapterNumber: chNum,
+            title,
+            bodyText: plainText
+          });
+        } else {
+          fallbackSeries.push(novelItem);
+        }
+      });
+
+      const mergedSeries = seriesMap.size > 0 ? Array.from(seriesMap.values()) : fallbackSeries;
+      if (seriesMap.size > 0 && fallbackSeries.length > 0) {
+        fallbackSeries.forEach((item) => {
+          if (!seriesMap.has(item.slug)) mergedSeries.push(item);
+        });
+      }
+
+      chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+
+      APP_STATE.seriesList = mergedSeries;
+      APP_STATE.chapterList = chapters;
+      APP_STATE.musicTracks = tracks;
+      APP_STATE.genres = Array.from(genreSet);
+    }
+
+    function fetchBloggerFeed() {
+      return new Promise((resolve) => {
+        const base = (SITE_CONFIG.bloggerUrl || "").replace(/\/+$/, "");
+        if (!base) return resolve();
+
+        const cbName = "kbFeedCb_" + Date.now();
+        const timer = setTimeout(() => {
+          cleanup();
+          resolve();
+        }, 4500);
+
+        function cleanup() {
+          clearTimeout(timer);
+          delete window[cbName];
+          const el = document.getElementById(cbName);
+          if (el && el.parentNode) el.parentNode.removeChild(el);
+        }
+
+        window[cbName] = (data) => {
+          cleanup();
+          try {
+            const entries = (data && data.feed && data.feed.entry) || [];
+            parseBloggerFeed(entries);
+          } catch (err) {
+            console.warn("Feed parse error:", err);
+          }
+          resolve();
+        };
+
+        const script = document.createElement("script");
+        script.id = cbName;
+        script.src = `${base}/feeds/posts/default?alt=json-in-script&max-results=150&callback=${cbName}`;
+        script.onerror = () => {
+          cleanup();
+          resolve();
+        };
+        document.body.appendChild(script);
+      });
+    }
+
+    function ensureAudioPlayer() {
+      if (!audioPlayer) {
+        audioPlayer = document.createElement("audio");
+        audioPlayer.preload = "metadata";
+        audioPlayer.addEventListener("ended", () => {
+          nextAudioTrack(true);
+        });
+        document.body.appendChild(audioPlayer);
+      }
+      return audioPlayer;
+    }
+
+    function toggleAudioPlay() {
+      const tracks = APP_STATE.musicTracks || [];
+      if (!tracks.length) {
+        showToast("Belum ada postingan musik (label 'Musik') di Blogger.");
+        return;
+      }
+      const player = ensureAudioPlayer();
+      const track = tracks[currentTrackIdx] || tracks[0];
+      if (player.src !== track.url) player.src = track.url;
+
+      if (isAudioPlaying) {
+        player.pause();
+        isAudioPlaying = false;
+        renderView();
+      } else {
+        player.play().then(() => {
+          isAudioPlaying = true;
+          renderView();
+        }).catch(() => {
+          isAudioPlaying = false;
+          showToast("Audio gagal diputar. Pastikan link file audio valid.");
+          renderView();
+        });
+      }
+    }
+
+    function nextAudioTrack(autoPlay = false) {
+      const tracks = APP_STATE.musicTracks || [];
+      if (!tracks.length) return;
+      currentTrackIdx = (currentTrackIdx + 1) % tracks.length;
+      const player = ensureAudioPlayer();
+      player.src = tracks[currentTrackIdx].url;
+      if (autoPlay || isAudioPlaying) {
+        player.play().then(() => {
+          isAudioPlaying = true;
+          renderView();
+        }).catch(() => {
+          isAudioPlaying = false;
+          renderView();
+        });
+      } else {
+        renderView();
+      }
+    }
+
+    function renderHomeMusicWidget() {
+      const tracks = APP_STATE.musicTracks || [];
+      if (!tracks.length) return "";
+      const active = tracks[currentTrackIdx] || tracks[0];
+      return `
+        <div class="mb-5 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl px-4 py-3 flex items-center justify-between gap-3 shadow-sm">
+          <div class="min-w-0">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-[var(--pastel-accent)]">Musik Latar Home</p>
+            <p class="text-sm font-bold text-[var(--pastel-text)] truncate">${escapeHtml(active.title)}</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onclick="toggleAudioPlay()"
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[var(--pastel-accent)] text-white cursor-pointer"
+            >
+              ${isAudioPlaying ? "Jeda" : "Putar"}
+            </button>
+            <button
+              type="button"
+              onclick="nextAudioTrack(false)"
+              class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--pastel-soft)] text-[var(--pastel-text)] border border-[var(--pastel-border)] cursor-pointer"
+            >
+              Berikutnya
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function getSeriesChapters(seriesSlug) {
+      const list = APP_STATE.chapterList.filter((ch) => ch.seriesSlug === seriesSlug);
+      if (list.length > 0) return list;
+      return [{
+        slug: `${seriesSlug}-bab-1`,
+        seriesSlug,
+        chapterNumber: 1,
+        title: "Bab 1",
+        bodyText: "Isi bab belum tersedia di feed Blogger."
+      }];
+    }
+
+    function renderPosterCard(novel) {
+      const saved = bookmarkedSlugs.includes(novel.slug);
+      return `
+        <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl overflow-hidden shadow-sm hover:border-[var(--pastel-accent)] transition flex flex-col">
+          <div class="relative w-full aspect-[2/3] bg-[var(--pastel-soft)] overflow-hidden">
+            <button
+              type="button"
+              onclick="openNovelDetail('${escapeHtml(novel.slug)}')"
+              class="block w-full h-full cursor-pointer text-left"
+            >
+              <img
+                src="${escapeHtml(novel.cover)}"
+                alt="${escapeHtml(novel.title)}"
+                onerror="this.onerror=null;this.src='https://placehold.co/600x900/dcebfa/162b4d?text=Poster';"
+                class="w-full h-full object-cover object-top block hover:scale-105 transition duration-300"
+              />
+            </button>
+            <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[var(--pastel-card)]/90 text-[var(--pastel-text)] border border-[var(--pastel-border)]">
+              ${escapeHtml(novel.status)}
+            </span>
+            <button
+              type="button"
+              aria-label="Bookmark"
+              onclick="toggleBookmark('${escapeHtml(novel.slug)}')"
+              class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-[var(--pastel-card)]/90 border border-[var(--pastel-border)] flex items-center justify-center text-sm font-bold cursor-pointer ${
+                saved ? "text-amber-500" : "text-[var(--pastel-muted)]"
+              }"
+            >
+              ${saved ? "&#9733;" : "&#9734;"}
+            </button>
+          </div>
+          <div class="p-3.5 flex-1 flex flex-col justify-between gap-2">
+            <div>
+              <button
+                type="button"
+                onclick="openNovelDetail('${escapeHtml(novel.slug)}')"
+                class="text-left text-sm sm:text-base font-extrabold text-[var(--pastel-text)] hover:text-[var(--pastel-accent)] line-clamp-2 leading-snug cursor-pointer"
+              >
+                ${escapeHtml(novel.title)}
+              </button>
+              ${novel.authorLine ? `<p class="text-xs text-[var(--pastel-muted)] mt-1 truncate">${escapeHtml(novel.authorLine)}</p>` : ""}
+            </div>
+            <div class="flex flex-wrap gap-1 pt-1">
+              ${(novel.genres || []).slice(0, 2).map((g) => `
+                <button
+                  type="button"
+                  onclick="selectGenreFilter('${escapeHtml(g)}')"
+                  class="text-[11px] px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] text-[var(--pastel-accent)] font-semibold hover:underline cursor-pointer"
+                >
+                  ${escapeHtml(g)}
+                </button>
+              `).join("")}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderHeroCarousel(items) {
+      if (!items.length) return "";
+      const idx = APP_STATE.heroSlideIndex % items.length;
+      const item = items[idx];
+      return `
+        <section class="relative rounded-3xl overflow-hidden border border-[var(--pastel-border)] shadow-sm mb-5">
+          <div
+            class="absolute inset-0 bg-cover bg-center scale-110 blur-xl opacity-45 pointer-events-none"
+            style="background-image: url('${escapeHtml(item.cover)}');"
+          ></div>
+          <div class="relative hero-slide-enter frosted-glass-panel p-4 sm:p-6 space-y-4">
+            <button
+              type="button"
+              onclick="openNovelDetail('${escapeHtml(item.slug)}')"
+              class="block w-full aspect-[16/9] max-h-64 sm:max-h-80 rounded-2xl overflow-hidden border border-[var(--pastel-border)] shadow-md cursor-pointer bg-[var(--pastel-soft)]"
+            >
+              <img
+                src="${escapeHtml(item.cover)}"
+                alt="${escapeHtml(item.title)}"
+                onerror="this.onerror=null;this.src='https://placehold.co/1200x675/dcebfa/162b4d?text=Banner+Novel';"
+                class="w-full h-full object-cover object-center block"
+              />
+            </button>
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-[var(--pastel-soft)] text-[var(--pastel-accent)] border border-[var(--pastel-border)]">
+                  Sorotan ${escapeHtml(item.status)}
+                </span>
+                ${(item.genres || []).slice(0, 2).map((g) => `
+                  <button
+                    type="button"
+                    onclick="selectGenreFilter('${escapeHtml(g)}')"
+                    class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--pastel-card)] text-[var(--pastel-text)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] cursor-pointer"
+                  >
+                    ${escapeHtml(g)}
+                  </button>
+                `).join("")}
+              </div>
+              <h1 class="text-xl sm:text-2xl font-extrabold text-[var(--pastel-text)] leading-tight mb-1">
+                <button type="button" onclick="openNovelDetail('${escapeHtml(item.slug)}')" class="text-left hover:text-[var(--pastel-accent)] cursor-pointer">
+                  ${escapeHtml(item.title)}
+                </button>
+              </h1>
+              ${item.authorLine ? `<p class="text-xs text-[var(--pastel-muted)] mb-2">${escapeHtml(item.authorLine)}</p>` : ""}
+              <p class="text-sm text-[var(--pastel-muted)] line-clamp-2 mb-4">${escapeHtml(item.synopsis)}</p>
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onclick="openNovelDetail('${escapeHtml(item.slug)}')"
+                  class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white text-sm font-bold transition cursor-pointer"
+                >
+                  Baca Detail Novel
+                </button>
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    aria-label="Slide Sebelumnya"
+                    onclick="shiftHeroSlide(-1)"
+                    class="w-9 h-9 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] font-bold cursor-pointer"
+                  >
+                    &lsaquo;
+                  </button>
+                  <span class="text-xs font-bold text-[var(--pastel-muted)]">Slide ${idx + 1} / ${items.length}</span>
+                  <button
+                    type="button"
+                    aria-label="Slide Berikutnya"
+                    onclick="shiftHeroSlide(1)"
+                    class="w-9 h-9 rounded-xl bg-[var(--pastel-card)] border border-[var(--pastel-border)] font-bold cursor-pointer"
+                  >
+                    &rsaquo;
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function shiftHeroSlide(step) {
+      const total = APP_STATE.seriesList.length;
+      if (!total) return;
+      APP_STATE.heroSlideIndex = (APP_STATE.heroSlideIndex + step + total) % total;
+      renderView();
+    }
+
+    function startHeroCarousel() {
+      if (heroTimer) clearInterval(heroTimer);
+      heroTimer = setInterval(() => {
+        if (APP_STATE.view === "home" && !APP_STATE.selectedGenre && APP_STATE.seriesList.length > 1) {
+          APP_STATE.heroSlideIndex = (APP_STATE.heroSlideIndex + 1) % APP_STATE.seriesList.length;
+          renderView();
+        }
+      }, 5000);
+    }
+
+    function renderHomeContent(viewport) {
+      const all = APP_STATE.seriesList || [];
+      const activeGenre = APP_STATE.selectedGenre;
+
+      const genrePickerHtml = APP_STATE.genrePickerOpen ? `
+        <div class="mb-5 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-2.5">
+            <h2 class="text-sm font-bold text-[var(--pastel-text)]">Pilih Genre</h2>
+            <button type="button" onclick="selectGenreFilter('')" class="text-xs font-semibold text-[var(--pastel-accent)] cursor-pointer">Semua Genre</button>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            ${Array.from(new Set([...ALL_GENRES, ...APP_STATE.genres])).map((g) => `
+              <button
+                type="button"
+                onclick="selectGenreFilter('${escapeHtml(g)}')"
+                class="px-3 py-1.5 rounded-xl text-xs font-semibold border cursor-pointer ${
+                  activeGenre.toLowerCase() === g.toLowerCase()
+                    ? "bg-[var(--pastel-accent)] text-white border-[var(--pastel-accent)]"
+                    : "bg-[var(--pastel-soft)] text-[var(--pastel-text)] border-[var(--pastel-border)]"
+                }"
+              >
+                ${escapeHtml(g)}
+              </button>
+            `).join("")}
+          </div>
+        </div>
+      ` : "";
+
+      if (activeGenre) {
+        const filtered = all.filter((n) => (n.genres || []).some((g) => g.toLowerCase() === activeGenre.toLowerCase()));
+        viewport.innerHTML = `
+          ${renderHomeMusicWidget()}
+          ${genrePickerHtml}
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h1 class="text-xl sm:text-2xl font-extrabold text-[var(--pastel-text)]">Genre: ${escapeHtml(activeGenre)}</h1>
+              <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Menampilkan novel dengan genre ${escapeHtml(activeGenre)}</p>
+            </div>
+            <button
+              type="button"
+              onclick="goHomePage()"
+              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--pastel-soft)] text-[var(--pastel-text)] border border-[var(--pastel-border)] cursor-pointer"
+            >
+              &larr; Kembali ke Home
+            </button>
+          </div>
+          ${
+            filtered.length
+              ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${filtered.map(renderPosterCard).join("")}</div>`
+              : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-sm text-[var(--pastel-muted)]">Belum ada novel untuk genre "${escapeHtml(activeGenre)}".</div>`
+          }
+        `;
+        return;
+      }
+
+      const popular = (all.filter((n) => n.popular).length ? all.filter((n) => n.popular) : all).slice(0, 4);
+      const latest = all.slice().reverse().slice(0, 4);
+
+      const emptyCard = `
+        <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center space-y-2">
+          <div class="w-11 h-11 mx-auto rounded-2xl bg-[var(--pastel-soft)] text-[var(--pastel-accent)] font-extrabold flex items-center justify-center">K</div>
+          <h3 class="text-base font-bold text-[var(--pastel-text)]">Belum Ada Novel Ditampilkan</h3>
+          <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Wadah katalog siap terisi otomatis dari postingan Blogger berlabel 'Series'.</p>
+        </div>
+      `;
+
+      viewport.innerHTML = `
+        ${renderHomeMusicWidget()}
+        ${genrePickerHtml}
+        ${renderHeroCarousel(all)}
+        ${renderAdSlot("home_below_hero", "home")}
+
+        <section class="mb-6">
+          <div class="flex items-center justify-between gap-3 mb-3.5 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl px-4 py-3">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-xl bg-[var(--pastel-soft)] text-[var(--pastel-accent)] font-extrabold flex items-center justify-center text-sm">&#9733;</span>
+              <div>
+                <h2 class="text-base sm:text-lg font-extrabold text-[var(--pastel-text)] leading-tight">Novel Terpopuler</h2>
+                <p class="text-xs text-[var(--pastel-muted)]">Judul paling sering dibaca</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onclick="openSectionPage('popular')"
+              class="text-xs sm:text-sm font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer shrink-0"
+            >
+              Lihat Semua &rarr;
+            </button>
+          </div>
+          ${
+            popular.length
+              ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${popular.map(renderPosterCard).join("")}</div>`
+              : emptyCard
+          }
+        </section>
+
+        ${renderAdSlot("home_between_popular_latest", "home")}
+
+        <section class="mb-4">
+          <div class="flex items-center justify-between gap-3 mb-3.5 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl px-4 py-3">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-xl bg-[var(--pastel-soft)] text-[var(--pastel-accent)] font-extrabold flex items-center justify-center text-sm">&#10024;</span>
+              <div>
+                <h2 class="text-base sm:text-lg font-extrabold text-[var(--pastel-text)] leading-tight">Novel Terbaru</h2>
+                <p class="text-xs text-[var(--pastel-muted)]">Update cerita baru masuk</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onclick="openSectionPage('latest')"
+              class="text-xs sm:text-sm font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer shrink-0"
+            >
+              Lihat Semua &rarr;
+            </button>
+          </div>
+          ${
+            latest.length
+              ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${latest.map(renderPosterCard).join("")}</div>`
+              : emptyCard
+          }
+        </section>
+
+        ${renderAdSlot("home_before_footer", "home")}
+      `;
+    }
+
+    function renderSectionListPage(viewport, isPopular) {
+      const all = APP_STATE.seriesList || [];
+      const list = isPopular ? (all.filter((n) => n.popular).length ? all.filter((n) => n.popular) : all) : all.slice().reverse();
+      viewport.innerHTML = `
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-[var(--pastel-text)]">
+              ${isPopular ? "Semua Novel Terpopuler" : "Semua Novel Terbaru"}
+            </h1>
+            <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">
+              ${isPopular ? "Daftar lengkap novel terpopuler" : "Daftar lengkap novel terbaru"}
+            </p>
+          </div>
+          <button
+            type="button"
+            onclick="goHomePage()"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--pastel-soft)] text-[var(--pastel-text)] border border-[var(--pastel-border)] cursor-pointer"
+          >
+            &larr; Kembali ke Home
+          </button>
+        </div>
+        ${
+          list.length
+            ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${list.map(renderPosterCard).join("")}</div>`
+            : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-sm text-[var(--pastel-muted)]">Belum ada novel yang tersedia.</div>`
+        }
+      `;
+    }
+
+    function renderCatalogContent(viewport) {
+      const q = (APP_STATE.searchQuery || "").trim().toLowerCase();
+      const activeLetter = (APP_STATE.selectedLetter || "").toUpperCase();
+      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+      const sortedAll = (APP_STATE.seriesList || [])
+        .slice()
+        .sort((a, b) => a.title.localeCompare(b.title, "id", { sensitivity: "base" }));
+
+      const filtered = sortedAll.filter((n) => {
+        const cleanTitle = String(n.title || "").trim();
+        const firstChar = cleanTitle.charAt(0).toUpperCase();
+        const matchesLetter = !activeLetter
+          ? true
+          : activeLetter === "#"
+            ? !/[A-Z]/.test(firstChar)
+            : firstChar === activeLetter;
+
+        const matchesQuery = !q
+          ? true
+          : (
+              n.title.toLowerCase().includes(q) ||
+              (n.authorLine || "").toLowerCase().includes(q) ||
+              (n.genres || []).some((g) => g.toLowerCase().includes(q))
+            );
+
+        return matchesLetter && matchesQuery;
+      });
+
+      const keypadHtml = `
+        <div class="mb-4 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-3.5 shadow-sm">
+          <div class="flex items-center justify-between gap-2 mb-2.5">
+            <span class="text-xs font-bold text-[var(--pastel-muted)]">Filter Huruf A–Z</span>
+            <button
+              type="button"
+              onclick="selectLetterFilter('')"
+              class="text-xs font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer"
+            >
+              Semua (${sortedAll.length})
+            </button>
+          </div>
+          <div class="grid grid-cols-7 sm:grid-cols-9 md:grid-cols-13 gap-1.5">
+            ${alphabet.map((ch) => {
+              const selected = activeLetter === ch;
+              return `
+                <button
+                  type="button"
+                  onclick="selectLetterFilter('${ch}')"
+                  class="py-2 rounded-xl text-xs font-extrabold border transition cursor-pointer ${
+                    selected
+                      ? "bg-[var(--pastel-accent)] text-white border-[var(--pastel-accent)] shadow-sm"
+                      : "bg-[var(--pastel-soft)] text-[var(--pastel-text)] border-[var(--pastel-border)] hover:border-[var(--pastel-accent)]"
+                  }"
+                >
+                  ${ch}
+                </button>
+              `;
+            }).join("")}
+            <button
+              type="button"
+              onclick="selectLetterFilter('#')"
+              class="py-2 rounded-xl text-xs font-extrabold border transition cursor-pointer ${
+                activeLetter === "#"
+                  ? "bg-[var(--pastel-accent)] text-white border-[var(--pastel-accent)] shadow-sm"
+                  : "bg-[var(--pastel-soft)] text-[var(--pastel-text)] border-[var(--pastel-border)] hover:border-[var(--pastel-accent)]"
+              }"
+            >
+              #
+            </button>
+          </div>
+        </div>
+      `;
+
+      const azListHtml = filtered.length
+        ? `
+          <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl divide-y divide-[var(--pastel-border)] shadow-sm overflow-hidden">
+            ${filtered.map((novel) => {
+              const saved = bookmarkedSlugs.includes(novel.slug);
+              return `
+                <div class="px-4 py-3 flex items-center justify-between gap-3 hover:bg-[var(--pastel-soft)]/60 transition">
+                  <button
+                    type="button"
+                    onclick="openNovelDetail('${escapeHtml(novel.slug)}')"
+                    class="min-w-0 flex-1 text-left cursor-pointer"
+                  >
+                    <div class="text-sm sm:text-base font-extrabold text-[var(--pastel-text)] hover:text-[var(--pastel-accent)] truncate">
+                      ${escapeHtml(novel.title)}
+                    </div>
+                  </button>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      aria-label="Bookmark"
+                      onclick="toggleBookmark('${escapeHtml(novel.slug)}')"
+                      class="w-8 h-8 rounded-lg bg-[var(--pastel-soft)] border border-[var(--pastel-border)] flex items-center justify-center text-xs font-bold cursor-pointer ${
+                        saved ? "text-amber-500" : "text-[var(--pastel-muted)]"
+                      }"
+                    >
+                      ${saved ? "&#9733;" : "&#9734;"}
+                    </button>
+                    <button
+                      type="button"
+                      onclick="openNovelDetail('${escapeHtml(novel.slug)}')"
+                      class="text-xs font-bold text-[var(--pastel-accent)] hover:underline cursor-pointer"
+                    >
+                      Baca &rarr;
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `
+        : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-sm text-[var(--pastel-muted)]">Tidak ada novel yang cocok dengan filter A–Z.</div>`;
+
+      viewport.innerHTML = `
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-[var(--pastel-text)]">Daftar Novel (A–Z)</h1>
+            <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Urutan judul menyusun dari A sampai Z</p>
+          </div>
+          <button
+            type="button"
+            onclick="goHomePage()"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--pastel-soft)] text-[var(--pastel-text)] border border-[var(--pastel-border)] cursor-pointer"
+          >
+            &larr; Kembali ke Home
+          </button>
+        </div>
+        ${renderAdSlot("catalog_top", "catalog")}
+        ${keypadHtml}
+        ${azListHtml}
+        ${renderAdSlot("catalog_after_rows", "catalog")}
+      `;
+    }
+
+    function renderBookmarksContent(viewport) {
+      const saved = (APP_STATE.seriesList || []).filter((n) => bookmarkedSlugs.includes(n.slug));
+      viewport.innerHTML = `
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-[var(--pastel-text)]">Bookmark Saya</h1>
+            <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Novel yang sudah kamu simpan</p>
+          </div>
+          <button
+            type="button"
+            onclick="goHomePage()"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--pastel-soft)] text-[var(--pastel-text)] border border-[var(--pastel-border)] cursor-pointer"
+          >
+            &larr; Kembali ke Home
+          </button>
+        </div>
+        ${
+          saved.length
+            ? `<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">${saved.map(renderPosterCard).join("")}</div>`
+            : `<div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center text-sm text-[var(--pastel-muted)]">Belum ada novel di Bookmark.</div>`
+        }
+      `;
+    }
+
+    function renderNovelDetailContent(viewport) {
+      const novel = (APP_STATE.seriesList || []).find((n) => n.slug === APP_STATE.selectedNovelSlug) || (APP_STATE.seriesList || [])[0];
+      if (!novel) {
+        viewport.innerHTML = `
+          <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-8 text-center space-y-3">
+            <p class="text-sm text-[var(--pastel-muted)]">Detail novel tidak ditemukan.</p>
+            <button type="button" onclick="goHomePage()" class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer">&larr; Kembali ke Home</button>
+          </div>
+        `;
+        return;
+      }
+
+      const chapters = getSeriesChapters(novel.slug);
+      const saved = bookmarkedSlugs.includes(novel.slug);
+
+      viewport.innerHTML = `
+        <div class="mb-4">
+          <button
+            type="button"
+            onclick="goHomePage()"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--pastel-card)] text-[var(--pastel-text)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] cursor-pointer"
+          >
+            &larr; Kembali ke Home
+          </button>
+        </div>
+
+        <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-3xl p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-[164px_minmax(0,1fr)] gap-5 shadow-sm">
+          <div class="w-40 sm:w-full aspect-[2/3] rounded-2xl overflow-hidden border border-[var(--pastel-border)] bg-[var(--pastel-soft)] mx-auto sm:mx-0">
+            <img
+              src="${escapeHtml(novel.cover)}"
+              alt="${escapeHtml(novel.title)}"
+              onerror="this.onerror=null;this.src='https://placehold.co/600x900/dcebfa/162b4d?text=Poster';"
+              class="w-full h-full object-cover object-top block"
+            />
+          </div>
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-[var(--pastel-soft)] text-[var(--pastel-accent)]">
+                Status: ${escapeHtml(novel.status)}
+              </span>
+              ${(novel.genres || []).map((g) => `
+                <button
+                  type="button"
+                  onclick="selectGenreFilter('${escapeHtml(g)}')"
+                  class="px-3 py-0.5 rounded-full text-xs font-semibold bg-[var(--pastel-bg)] text-[var(--pastel-text)] border border-[var(--pastel-border)] hover:border-[var(--pastel-accent)] cursor-pointer"
+                >
+                  ${escapeHtml(g)}
+                </button>
+              `).join("")}
+            </div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-[var(--pastel-text)] leading-snug">${escapeHtml(novel.title)}</h1>
+            <p class="text-xs text-[var(--pastel-muted)] mt-1 mb-3">
+              ${novel.authorLine ? `${escapeHtml(novel.authorLine)} &bull; ` : ""}${chapters.length} Bab
+            </p>
+            <div class="flex flex-wrap gap-2.5">
+              <button
+                type="button"
+                onclick="openChapterReader('${escapeHtml(novel.slug)}', '${escapeHtml(chapters[0].slug)}')"
+                class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white text-sm font-bold transition cursor-pointer"
+              >
+                Mulai Membaca ${escapeHtml(chapters[0].title)}
+              </button>
+              <button
+                type="button"
+                onclick="toggleBookmark('${escapeHtml(novel.slug)}')"
+                class="px-4 py-2 rounded-xl bg-[var(--pastel-soft)] text-[var(--pastel-text)] border border-[var(--pastel-border)] text-sm font-semibold cursor-pointer"
+              >
+                ${saved ? "&#9733; Tersimpan" : "&#9734; Simpan Bookmark"}
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <section class="mt-5 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 shadow-sm">
+          <h2 class="text-base font-extrabold text-[var(--pastel-text)] mb-2">Sinopsis</h2>
+          <p class="text-sm text-[var(--pastel-muted)] whitespace-pre-line">${escapeHtml(novel.synopsis)}</p>
+        </section>
+
+        ${renderAdSlot("detail_below_synopsis", "detail")}
+        ${renderAdSlot("detail_above_chapter_list", "detail")}
+
+        <section class="mt-5 bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 shadow-sm">
+          <h2 class="text-base font-extrabold text-[var(--pastel-text)] mb-3">Daftar Bab (${chapters.length})</h2>
+          <div class="max-h-72 overflow-y-auto divide-y divide-[var(--pastel-border)] border border-[var(--pastel-border)] rounded-xl">
+            ${chapters.map((ch) => `
+              <button
+                type="button"
+                onclick="openChapterReader('${escapeHtml(novel.slug)}', '${escapeHtml(ch.slug)}')"
+                class="w-full flex items-center justify-between px-3.5 py-2.5 text-sm hover:bg-[var(--pastel-soft)] transition cursor-pointer text-left"
+              >
+                <span class="font-semibold text-[var(--pastel-text)] truncate">${escapeHtml(ch.title)}</span>
+                <span class="text-xs font-bold text-[var(--pastel-accent)] shrink-0 ml-2">Baca &rarr;</span>
+              </button>
+            `).join("")}
+          </div>
+        </section>
+
+        ${renderAdSlot("detail_below_chapter_list", "detail")}
+      `;
+    }
+
+    function renderChapterReaderContent(viewport) {
+      const novel = (APP_STATE.seriesList || []).find((n) => n.slug === APP_STATE.selectedNovelSlug) || (APP_STATE.seriesList || [])[0];
+      const chapters = novel ? getSeriesChapters(novel.slug) : [];
+      const currentIdx = Math.max(0, chapters.findIndex((c) => c.slug === APP_STATE.selectedChapterSlug));
+      const chapter = chapters[currentIdx] || { slug: "bab-1", title: "Bab 1", bodyText: "Isi bab belum tersedia." };
+      const prev = currentIdx > 0 ? chapters[currentIdx - 1] : null;
+      const next = currentIdx < chapters.length - 1 ? chapters[currentIdx + 1] : null;
+
+      const paras = String(chapter.bodyText || "").split(/\n+/).map((p) => p.trim()).filter(Boolean);
+
+      viewport.innerHTML = `
+        <div class="mb-4 flex items-center justify-between gap-2">
+          <button
+            type="button"
+            onclick="goHomePage()"
+            class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--pastel-card)] text-[var(--pastel-text)] border border-[var(--pastel-border)] cursor-pointer"
+          >
+            &larr; Kembali ke Home
+          </button>
+          ${
+            novel
+              ? `<button type="button" onclick="openNovelDetail('${escapeHtml(novel.slug)}')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-[var(--pastel-soft)] text-[var(--pastel-accent)] cursor-pointer">Detail Novel</button>`
+              : ""
+          }
+        </div>
+
+        ${renderAdSlot("reader_above_title", "reader")}
+
+        <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-3xl p-5 sm:p-7 shadow-sm">
+          <p class="text-xs font-bold text-[var(--pastel-accent)] uppercase tracking-wider">${escapeHtml(novel ? novel.title : "Novel")}</p>
+          <h1 class="text-xl sm:text-2xl font-extrabold text-[var(--pastel-text)] mt-1 pb-4 border-b border-[var(--pastel-border)]">${escapeHtml(chapter.title)}</h1>
+
+          <div class="font-reading text-base sm:text-lg leading-relaxed text-[var(--pastel-text)] mt-5 space-y-4">
+            ${paras.length ? paras.map((p) => `<p>${escapeHtml(p)}</p>`).join("") : `<p>${escapeHtml(chapter.bodyText || "")}</p>`}
+          </div>
+
+          ${renderAdSlot("reader_below_content", "reader")}
+
+          <div class="mt-6 pt-4 border-t border-[var(--pastel-border)] flex items-center justify-between gap-3">
+            ${
+              prev && novel
+                ? `<button type="button" onclick="openChapterReader('${escapeHtml(novel.slug)}', '${escapeHtml(prev.slug)}')" class="px-4 py-2 rounded-xl bg-[var(--pastel-soft)] text-xs sm:text-sm font-bold cursor-pointer">&larr; Bab Sebelumnya</button>`
+                : `<span></span>`
+            }
+            ${
+              next && novel
+                ? `<button type="button" onclick="openChapterReader('${escapeHtml(novel.slug)}', '${escapeHtml(next.slug)}')" class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs sm:text-sm font-bold cursor-pointer">Bab Berikutnya &rarr;</button>`
+                : `<span></span>`
+            }
+          </div>
+        </article>
+      `;
+    }
+
+    function renderView() {
+      const viewport = document.getElementById("appViewport");
+      if (!viewport) return;
+
+      try {
+        switch (APP_STATE.view) {
+          case "section_popular":
+            setActiveNav("home");
+            renderSectionListPage(viewport, true);
+            break;
+          case "section_latest":
+            setActiveNav("home");
+            renderSectionListPage(viewport, false);
+            break;
+          case "catalog":
+            setActiveNav("catalog");
+            renderCatalogContent(viewport);
+            break;
+          case "bookmarks":
+            setActiveNav("bookmarks");
+            renderBookmarksContent(viewport);
+            break;
+          case "detail":
+            setActiveNav("home");
+            renderNovelDetailContent(viewport);
+            break;
+          case "reader":
+            setActiveNav("home");
+            renderChapterReaderContent(viewport);
+            break;
+          case "home":
+          default:
+            setActiveNav(APP_STATE.genrePickerOpen ? "genre" : "home");
+            renderHomeContent(viewport);
+            break;
+        }
+      } catch (err) {
+        console.error("Render error:", err);
+        viewport.innerHTML = `
+          <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-6 text-center space-y-3">
+            <p class="text-sm font-bold text-[var(--pastel-text)]">Halaman gagal dimuat.</p>
+            <button type="button" onclick="goHomePage()" class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer">Kembali ke Home</button>
+          </div>
+        `;
+      }
+    }
+
+    function closePopup() {
+      const backdrop = document.getElementById("popupModalBackdrop");
+      if (backdrop) backdrop.classList.remove("is-open");
+      activePopupType = null;
+    }
+
+    function showPopup(type) {
+      if (activePopupType) return;
+      const cfg = MONETIZATION_CONFIG.popups[type];
+      if (!cfg || cfg.enabled === false) return;
+      if (type === "welcome" && !userPrefs.popupEnabled) return;
+      if (type === "promotional" && (!userPrefs.popupEnabled || !userPrefs.promoEnabled)) return;
+
+      const backdrop = document.getElementById("popupModalBackdrop");
+      const body = document.getElementById("popupModalBody");
+      if (!backdrop || !body) return;
+
+      activePopupType = type;
+      body.innerHTML = `
+        <span class="inline-block px-3 py-0.5 rounded-full text-xs font-bold bg-[var(--pastel-soft)] text-[var(--pastel-accent)] mb-2">${escapeHtml(cfg.badge)}</span>
+        <h2 class="text-lg font-extrabold text-[var(--pastel-text)] mb-1.5">${escapeHtml(cfg.title)}</h2>
+        <p class="text-sm text-[var(--pastel-muted)] mb-5">${escapeHtml(cfg.description)}</p>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closePopup()" class="px-4 py-2 rounded-xl bg-[var(--pastel-soft)] text-xs font-bold cursor-pointer">Tutup</button>
+          <button type="button" onclick="closePopup(); openCatalogPage();" class="px-4 py-2 rounded-xl bg-[var(--pastel-accent)] text-white text-xs font-bold cursor-pointer">${escapeHtml(cfg.ctaText || "Buka")}</button>
+        </div>
+      `;
+      backdrop.classList.add("is-open");
+    }
+
+    function closePrefModal() {
+      const backdrop = document.getElementById("prefModalBackdrop");
+      if (backdrop) backdrop.classList.remove("is-open");
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const yr = document.getElementById("footerYear");
+      if (yr) yr.textContent = String(new Date().getFullYear());
+
+      loadPrefs();
+      applyTheme();
+      applySidebar();
+      loadBookmarks();
+      renderGenrePills();
+      renderSidebarAds();
+
+      const popupClose = document.getElementById("popupModalCloseBtn");
+      if (popupClose) popupClose.addEventListener("click", closePopup);
+
+      const prefClose = document.getElementById("prefModalCloseBtn");
+      if (prefClose) prefClose.addEventListener("click", closePrefModal);
+
+      const savePrefBtn = document.getElementById("savePrefBtn");
+      if (savePrefBtn) {
+        savePrefBtn.addEventListener("click", () => {
+          const c1 = document.getElementById("prefPopupCheck");
+          const c2 = document.getElementById("prefPromoCheck");
+          const c3 = document.getElementById("prefSidebarCheck");
+          if (c1) userPrefs.popupEnabled = c1.checked;
+          if (c2) userPrefs.promoEnabled = c2.checked;
+          if (c3) userPrefs.sidebarEnabled = c3.checked;
+          savePrefs();
+          applySidebar();
+          closePrefModal();
+        });
+      }
+
+      APP_STATE.view = "home";
+      renderView();
+
+      await fetchBloggerFeed();
+      renderGenrePills();
+      renderView();
+      startHeroCarousel();
+
+      const wCfg = MONETIZATION_CONFIG.popups.welcome;
+      if (wCfg && wCfg.enabled) {
+        setTimeout(() => showPopup("welcome"), wCfg.delayMs || 3500);
+      }
+      const pCfg = MONETIZATION_CONFIG.popups.promotional;
+      if (pCfg && pCfg.enabled) {
+        setTimeout(() => showPopup("promotional"), pCfg.delayMs || 14000);
+      }
+    });
+  </script>
+</body>
+</html>
+```
