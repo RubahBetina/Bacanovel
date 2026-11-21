@@ -72,7 +72,7 @@
         </span>
       </button>
 
-      <!-- Kolom Search di ruang header atas sesuai permintaan -->
+      <!-- Kolom Search di ruang header atas -->
       <input
         id="headerSearchInput"
         type="search"
@@ -199,18 +199,23 @@
     </div>
   </main>
 
-  <!-- Footer -->
+  <!-- Footer Singkat Hak Cipta -->
   <footer class="bg-[var(--pastel-card)] border-t border-[var(--pastel-border)] py-5 px-4 text-center text-xs sm:text-sm text-[var(--pastel-muted)]">
     <div class="max-w-6xl mx-auto">
-      <p class="mb-2">&copy; KertasBiru &mdash; Platform Baca Novel.</p>
-      <div class="flex items-center justify-center gap-4 font-semibold">
-        <button type="button" onclick="goHome()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Home</button>
-        <button type="button" onclick="openCatalogView()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Daftar Novel</button>
-        <button type="button" onclick="openGenreView('')" class="hover:text-[var(--pastel-accent)] cursor-pointer">Genre</button>
-        <button type="button" onclick="openBookmarkView()" class="hover:text-[var(--pastel-accent)] cursor-pointer">Bookmark</button>
-      </div>
+      <p>&copy; KertasBiru. Hak cipta dilindungi undang-undang.</p>
     </div>
   </footer>
+
+  <!-- Tombol Ikon Meluncur ke Atas Saat Scroll ke Bawah -->
+  <button
+    id="scrollToTopBtn"
+    type="button"
+    onclick="scrollToTopSmooth()"
+    aria-label="Kembali ke Atas"
+    class="hidden fixed bottom-5 right-5 z-40 w-10 h-10 rounded-full bg-[var(--pastel-accent)] hover:bg-[var(--pastel-accent-hover)] text-white shadow-lg flex items-center justify-center text-sm font-extrabold cursor-pointer transition-opacity"
+  >
+    &#8593;
+  </button>
 
   <!-- Modal Pop-Up Iklan (Maksimal Sekali Tiap 20 Menit) -->
   <div
@@ -398,8 +403,8 @@
                 >
                   ${
                     n.cover
-                      ? `<img src="${escapeHtml(n.cover)}" alt="${escapeHtml(n.title)}" class="w-9 h-12 rounded-lg object-cover object-top shrink-0" />`
-                      : `<div class="w-9 h-12 rounded-lg bg-[var(--pastel-soft)] shrink-0"></div>`
+                      ? `<img src="${escapeHtml(n.cover)}" alt="${escapeHtml(n.title)}" class="w-8 h-12 rounded-lg object-cover object-top shrink-0" />`
+                      : `<div class="w-8 h-12 rounded-lg bg-[var(--pastel-soft)] shrink-0"></div>`
                   }
                   <div class="min-w-0">
                     <div class="text-xs font-bold truncate">${escapeHtml(n.title)}</div>
@@ -610,7 +615,7 @@
 
       return `
         <article class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl overflow-hidden flex flex-col hover:border-[var(--pastel-accent)] transition-colors">
-          <div class="relative w-full aspect-[3/4] bg-[var(--pastel-soft)] overflow-hidden">
+          <div class="relative w-full aspect-[2/3] bg-[var(--pastel-soft)] overflow-hidden">
             ${
               novel.cover
                 ? `<img
@@ -640,18 +645,18 @@
               ${isBookmarked ? "&#9733;" : "&#9734;"}
             </button>
           </div>
-          <div class="p-3 flex-1 flex flex-col justify-between">
+          <div class="px-2.5 py-2 flex flex-col gap-1">
             <h3
               onclick="openNovelDetail('${escapeHtml(novel.id)}')"
-              class="text-sm font-extrabold leading-snug line-clamp-2 mb-2 cursor-pointer hover:text-[var(--pastel-accent)]"
+              class="text-xs sm:text-sm font-extrabold leading-tight line-clamp-1 cursor-pointer hover:text-[var(--pastel-accent)]"
             >
               ${escapeHtml(novel.title)}
             </h3>
-            <div class="flex items-center justify-between gap-2 text-[11px] text-[var(--pastel-muted)]">
-              <span class="px-2 py-0.5 rounded-md bg-[var(--pastel-soft)] font-semibold truncate">
+            <div class="flex items-center justify-between gap-1.5 text-[10px] text-[var(--pastel-muted)] leading-none pt-0.5">
+              <span class="px-1.5 py-0.5 rounded bg-[var(--pastel-soft)] font-semibold truncate">
                 ${escapeHtml(primaryGenre)}
               </span>
-              <span class="shrink-0">${chapCount} Bab</span>
+              <span class="shrink-0 font-medium">${chapCount} Bab</span>
             </div>
           </div>
         </article>
@@ -680,7 +685,7 @@
           style="background: linear-gradient(125deg, rgba(37, 99, 235, 0.14) 0%, rgba(59, 130, 246, 0.05) 100%);"
         >
           <div class="w-full flex flex-row items-center gap-4 sm:gap-6">
-            <div class="w-24 sm:w-32 aspect-[3/4] rounded-xl overflow-hidden bg-[var(--pastel-soft)] border border-[var(--pastel-border)] shrink-0">
+            <div class="w-24 sm:w-32 aspect-[2/3] rounded-xl overflow-hidden bg-[var(--pastel-soft)] border border-[var(--pastel-border)] shrink-0">
               ${
                 item.cover
                   ? `<img
@@ -894,7 +899,6 @@
           <p class="text-xs sm:text-sm text-[var(--pastel-muted)]">Pilih huruf di atas untuk menyaring judul novel (${list.length} judul)</p>
         </div>
 
-        <!-- Baris Tombol Huruf A-Z Ala Keyboard -->
         <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-3 mb-5 flex flex-wrap gap-1.5">
           <button
             type="button"
@@ -1080,7 +1084,7 @@
         </div>
 
         <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 mb-5 grid grid-cols-1 sm:grid-cols-[180px_minmax(0,1fr)] gap-5">
-          <div class="w-40 sm:w-full aspect-[3/4] rounded-xl overflow-hidden bg-[var(--pastel-soft)] border border-[var(--pastel-border)] mx-auto sm:mx-0">
+          <div class="w-40 sm:w-full aspect-[2/3] rounded-xl overflow-hidden bg-[var(--pastel-soft)] border border-[var(--pastel-border)] mx-auto sm:mx-0">
             ${
               novel.cover
                 ? `<img src="${escapeHtml(novel.cover)}" alt="${escapeHtml(novel.title)}" class="w-full h-full object-cover object-top block" />`
@@ -1100,7 +1104,6 @@
             <h1 class="text-xl sm:text-2xl font-extrabold mb-1">${escapeHtml(novel.title)}</h1>
             <p class="text-xs sm:text-sm text-[var(--pastel-muted)] mb-3">Penulis: ${escapeHtml(novel.author || "Anonim")}</p>
 
-            <!-- Kolom Sinopsis di Halaman Detail Novel -->
             <div class="p-3.5 rounded-xl bg-[var(--pastel-bg)] border border-[var(--pastel-border)] mb-4">
               <div class="text-[11px] font-extrabold uppercase tracking-wider text-[var(--pastel-accent)] mb-1">
                 Sinopsis
@@ -1133,7 +1136,6 @@
           </div>
         </div>
 
-        <!-- Daftar Bab -->
         <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5 mb-5">
           <h2 class="text-base font-extrabold mb-3">Daftar Bab (${chapters.length})</h2>
           ${
@@ -1158,7 +1160,6 @@
           }
         </div>
 
-        <!-- Kolom Komentar di Detail Novel -->
         <div class="bg-[var(--pastel-card)] border border-[var(--pastel-border)] rounded-2xl p-5">
           <h2 class="text-base font-extrabold mb-3">Komentar Pembaca (${comments.length})</h2>
           <form onsubmit="submitNovelComment(event, '${escapeHtml(novel.id)}')" class="space-y-3 mb-5">
@@ -1471,9 +1472,26 @@
       } catch (_err) {}
     }
 
+    function updateScrollToTopVisibility() {
+      const btn = document.getElementById("scrollToTopBtn");
+      if (!btn) return;
+      if (window.scrollY > 240) {
+        btn.classList.remove("hidden");
+      } else {
+        btn.classList.add("hidden");
+      }
+    }
+
+    function scrollToTopSmooth() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.addEventListener("scroll", updateScrollToTopVisibility, { passive: true });
+
     window.addEventListener("DOMContentLoaded", () => {
       loadSavedState();
       renderView();
+      updateScrollToTopVisibility();
       startHeroAutoSlide();
       loadBloggerData();
       setTimeout(checkTwentyMinutePopup, 1200);
